@@ -9,10 +9,27 @@
 
 
 int main( int argc, char *argv[] ) {
-    /* Commento */
+
+    /*
+     * Tipi di dato:
+     *  char
+     *  int
+     *  float
+     *  double
+     *
+     * char <= int <= float <= double
+     */
+
+    /*
+     * Qualificatori:
+     *  short
+     *  long
+     *  unsigned 
+     *
+     * char <= short <= int <= long <= float <= double <= long double
+     */
+
     printf("Hello World!");
     return 0;
 }
-
-/* pagina 10 */
 
