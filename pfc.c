@@ -21,6 +21,22 @@ int main( void ) {
     printf("unsigned short %d\n", (int)sizeof(unsigned short));
     printf("unsigned int %d\n", (int)sizeof(unsigned int));
     printf("unsigned long %d\n", (int)sizeof(unsigned long));
+
+    printf("\ooo"); 
+    // error on the next printf
+    // printf("\xhh");
+    printf("\\"  );
+    printf("\’"  );
+    printf("\""  );
+    printf("\0"  );
+    printf("\a"  );
+    printf("\b"  );
+    printf("\f"  );
+    printf("\n"  );
+    printf("\r"  );
+    printf("\t"  );
+    printf("\v"  );
+
     return 0;
 }
 
