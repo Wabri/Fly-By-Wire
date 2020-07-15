@@ -7,36 +7,42 @@
 
 #include <stdio.h>
 
+int main(void) {
 
-int main( void ) {
-    printf("char %d\n", (int)sizeof(char));
-    printf("short %d\n", (int)sizeof(short));
-    printf("int %d\n", (int)sizeof(int));
-    printf("long %d\n", (int)sizeof(long));
-    printf("float %d\n", (int)sizeof(float));
-    printf("double %d\n", (int)sizeof(double));
-    printf("long double %d\n", (int)sizeof(long double));
+  // declarations
+  int iValorized;
+  iValorized = 5;
+  const float fPi = 3.14159265;
 
-    printf("unsigned char %d\n", (int)sizeof(unsigned char));
-    printf("unsigned short %d\n", (int)sizeof(unsigned short));
-    printf("unsigned int %d\n", (int)sizeof(unsigned int));
-    printf("unsigned long %d\n", (int)sizeof(unsigned long));
+  printf("%f \n", fPi);
 
-    printf("\ooo"); 
-    // error on the next printf
-    // printf("\xhh");
-    printf("\\"  );
-    printf("\’"  );
-    printf("\""  );
-    printf("\0"  );
-    printf("\a"  );
-    printf("\b"  );
-    printf("\f"  );
-    printf("\n"  );
-    printf("\r"  );
-    printf("\t"  );
-    printf("\v"  );
+  printf("n %d\n", iValorized);
+  printf("n++ %d\n", iValorized++);
+  printf("++n %d\n", ++iValorized);
+  printf("n-- %d\n", iValorized--);
+  printf("--n %d\n", --iValorized);
 
-    return 0;
+  printf("+n %d\n", +iValorized);
+  printf("-n %d\n", -iValorized);
+
+  int iValorized2 = 14 % 3;
+
+  printf("n2 = %d\n", iValorized2);
+  printf("n+n2 %d\n", iValorized + iValorized2);
+  printf("n-n2 %d\n", iValorized - iValorized2);
+  printf("n/n2 %d\n", iValorized / iValorized2);
+
+  iValorized += iValorized2;
+  printf("n+=n2 %d\n", iValorized);
+
+  iValorized -= iValorized2;
+  printf("n-=n2 %d\n", iValorized);
+
+  iValorized *= iValorized2;
+  printf("n*=n2 %d\n", iValorized);
+
+  iValorized /= iValorized2;
+  printf("n/=n2 %d\n", iValorized);
+
+  return 0;
 }
-
