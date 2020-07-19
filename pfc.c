@@ -86,5 +86,61 @@ int main(void) {
    *   * op1 ~= op2
    */
 
+  printf("5/4 = %d \n", 5 / 4);
+
+  printf("5.0/4.0 = %f \n", 5.0 / 4.0);
+
+  printf("(cast)(5/4) = %f \n", (double)(5 / 4));
+
+  printf("(cast)5/4 = %f \n", (double)5 / 4);
+
+  iValorized = iValorized2, iValorized2 = ++iValorized3;
+
+  printf("n, n2 %d, %d \n", iValorized, iValorized2);
+
+  int count = 0;
+
+  printf("start \n");
+
+label:
+
+  count++;
+
+  printf("counter at %d \n", count);
+
+  switch (count) {
+  case 1:
+    goto label;
+  case 2:
+    goto label;
+  case 3:
+    goto stop;
+  case 4:
+    printf("Something happened with counter at %d \n", count);
+    break;
+  case 5:
+    printf("Counter at %d \n", count);
+    break;
+  }
+
+stop:
+  printf("cycle stops at %d \n", count);
+
+  if (count < 5) {
+    goto label;
+  }
+
+  while (count <= 8) {
+    count++;
+    if (count == 7) {
+      printf("It stops with 7 \n");
+      break;
+    } else {
+      printf("It continue != 7 \n");
+      continue;
+    }
+    goto label;
+  }
+
   return 0;
 }
