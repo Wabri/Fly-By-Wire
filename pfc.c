@@ -149,5 +149,12 @@ stop:
   for (int i = 0; i < 20; ++i, printf("%d \n", i % 3) )
     ;
 
+  // classi di memorizzazione
+  auto int automatic_int;
+  register int register_int;
+  static int static_int;
+  extern int extern_int;
+
   return 0;
 }
+

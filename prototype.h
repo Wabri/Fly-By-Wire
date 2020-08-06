@@ -19,3 +19,13 @@ int prodotto (int x, int y) {
     return x*y;
 }
 
+static void funzione_accessibile_solo_da_questo_file() {
+    // ...
+}
+
+static int accumulatore(int contatore) {
+    static int sIContatore = 0;
+    sIContatore += contatore;
+    return sIContatore;
+}
+
