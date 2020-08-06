@@ -150,10 +150,14 @@ stop:
     ;
 
   // classi di memorizzazione
-  auto int automatic_int;
-  register int register_int;
-  static int static_int;
-  extern int extern_int;
+  auto int automatic_int; // è la classe di default
+  register int register_int; // la variabile viene posta come registro del microprocessore
+                            // accesso veloce, ma sconsigliato l'utilizzo
+  static int static_int; // se dichiarata in campo globale allora accessibile solo nel file in cui è dichiarata,
+                        // se dichiarata in campo locale a una funzione mantiene il suo valore tra una chiamata e l'altra della funzione
+  extern int extern_int; // se si ha necessità di accedere alla variabile al di fuori del sorgente
+
+  
 
   return 0;
 }
