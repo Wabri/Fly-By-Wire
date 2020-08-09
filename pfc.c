@@ -30,6 +30,7 @@ int main(void) {
   printf("n+n2 %d\n", iValorized + iValorized2);
   printf("n-n2 %d\n", iValorized - iValorized2);
   printf("n/n2 %d\n", iValorized / iValorized2);
+  printf("n%%n2 %d\n", iValorized % iValorized2);
 
   iValorized += iValorized2;
   printf("n+=n2 %d\n", iValorized);
@@ -146,19 +147,30 @@ stop:
     printf("Cycle at %d\n", i);
   }
 
-  for (int i = 0; i < 20; ++i, printf("%d \n", i % 3) )
+  for (int i = 0; i < 20; ++i, printf("%d \n", i % 3))
     ;
 
   // classi di memorizzazione
-  auto int automatic_int; // è la classe di default
-  register int register_int; // la variabile viene posta come registro del microprocessore
-                            // accesso veloce, ma sconsigliato l'utilizzo
-  static int static_int; // se dichiarata in campo globale allora accessibile solo nel file in cui è dichiarata,
-                        // se dichiarata in campo locale a una funzione mantiene il suo valore tra una chiamata e l'altra della funzione
-  extern int extern_int; // se si ha necessità di accedere alla variabile al di fuori del sorgente
+  auto int automatic_int;    // è la classe di default
+  register int register_int; // la variabile viene posta come registro del
+                             // microprocessore accesso veloce, ma sconsigliato
+                             // l'utilizzo
+  static int static_int; // se dichiarata in campo globale allora accessibile
+                         // solo nel file in cui è dichiarata, se dichiarata in
+                         // campo locale a una funzione mantiene il suo valore
+                         // tra una chiamata e l'altra della funzione
+  extern int extern_int; // se si ha necessità di accedere alla variabile al di
+                         // fuori del sorgente
 
-  
+  printf("Inserisci un numero: ");
+  scanf("%d", &iValorized);
+  printf("Hai inserito %d\n", iValorized);
+
+  float fValorized;
+
+  printf("Puoi inserire un numero e poi un altro: ");
+  scanf("%d%f", &iValorized, &fValorized);
+  printf("Hai inserito 2 valori: %d, %f", iValorized, fValorized);
 
   return 0;
 }
-
