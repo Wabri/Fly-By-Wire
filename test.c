@@ -7,6 +7,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void funzione (int *);
+
+void funzione (int *x) {
+  (*x)++;
+}
+
 int main(void) {
 
   // declarations
@@ -171,9 +177,9 @@ stop:
 
   printf("Puoi inserire un numero e poi un altro: ");
   scanf("%d%f", &iValorized, &fValorized);
-  printf("Hai inserito 2 valori: %d, %f", iValorized, fValorized);
+  printf("Hai inserito 2 valori: %d, %f\n", iValorized, fValorized);
 
-  printf("Copio input su output ed elimino gli spazi");
+  printf("Copio input su output ed elimino gli spazi (usa | per uscire o q per quittare)");
 
   int c;
   while ((c = getchar()) != EOF) {
@@ -185,6 +191,15 @@ stop:
       putchar(c);
     } 
   }
+
+  int *p = &c;
+  printf("Valore di c: %d\n", c);
+  *p = 10;
+  printf("Valore di c dopo modifica con puntatore: %d\n", c);
+
+  printf("Provo a fare il passaggio di parametri con puntatore\n");
+  funzione(&c);
+  printf("Se va bene dovrebbe essere incrementato c di 1: %d", *&c);
 
   exit(EXIT_SUCCESS);
 
