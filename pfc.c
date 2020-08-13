@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(void) {
 
@@ -172,5 +173,20 @@ stop:
   scanf("%d%f", &iValorized, &fValorized);
   printf("Hai inserito 2 valori: %d, %f", iValorized, fValorized);
 
-  return 0;
+  printf("Copio input su output ed elimino gli spazi");
+
+  int c;
+  while ((c = getchar()) != EOF) {
+    if (c == '|') {
+      break;
+    } else if (c == 'q') {
+      exit( EXIT_FAILURE );
+    } else if (c != ' ') {
+      putchar(c);
+    } 
+  }
+
+  exit(EXIT_SUCCESS);
+
+  return 1;
 }
