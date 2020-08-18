@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 void funzione(int *);
 
@@ -16,6 +15,12 @@ void elabora(int *pi) {
   pi[0] = 1;
   pi[1] = 2;
   pi[2] = 3;
+}
+
+void elaboraDifferent(int vect[]) {
+  vect[0] = 12;
+  vect[1] = 123;
+  vect[2] = 1234;
 }
 
 int main(void) {
@@ -269,6 +274,13 @@ stop:
 
   printf("Elaboro a\n");
   elabora(a);
+
+  for (int i = 0; i < 7; i++) {
+    printf("a[%d]=%d\n", i, *(pi + i));
+  }
+
+  printf("Elaboro a different\n");
+  elaboraDifferent(a);
 
   for (int i = 0; i < 7; i++) {
     printf("a[%d]=%d\n", i, *(pi + i));
