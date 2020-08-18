@@ -6,11 +6,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void funzione (int *);
+void funzione(int *);
 
-void funzione (int *x) {
-  (*x)++;
+void funzione(int *x) { (*x)++; }
+
+void elabora(int *pi) {
+  pi[0] = 1;
+  pi[1] = 2;
+  pi[2] = 3;
 }
 
 int main(void) {
@@ -179,17 +184,18 @@ stop:
   scanf("%d%f", &iValorized, &fValorized);
   printf("Hai inserito 2 valori: %d, %f\n", iValorized, fValorized);
 
-  printf("Copio input su output ed elimino gli spazi (usa | per uscire o q per quittare)");
+  printf("Copio input su output ed elimino gli spazi (usa | per uscire o q per "
+         "quittare)");
 
   int c;
   while ((c = getchar()) != EOF) {
     if (c == '|') {
       break;
     } else if (c == 'q') {
-      exit( EXIT_FAILURE );
+      exit(EXIT_FAILURE);
     } else if (c != ' ') {
       putchar(c);
-    } 
+    }
   }
 
   int *p = &c;
@@ -199,7 +205,74 @@ stop:
 
   printf("Provo a fare il passaggio di parametri con puntatore\n");
   funzione(&c);
-  printf("Se va bene dovrebbe essere incrementato c di 1: %d", *&c);
+  printf("Se va bene dovrebbe essere incrementato c di 1: %d\n", *&c);
+
+  int a[7]; // dichiarazione di un array
+
+  a[1] = 123; // assegnazione di 123 al secondo elemento dell'array
+
+  int b[] = {123, 456, 789, 0, 55}; // dichiarazione di un array
+
+  for (int i = 0; i < 7; i++) {
+    a[i] = (i ^ 2) / 3;
+  }
+
+  for (int j = 6; j >= 0; j--) {
+    printf("a[%d]=%d\n", j, a[j]);
+    a[j] = (j ^ 3) / 2;
+    printf("a[%d]=%d\n", j, a[j]);
+  }
+
+  int *pi;
+  pi = a;
+
+  printf("*pi = %d\n", *pi);
+
+  pi++;
+
+  printf("*pi = %d\n", *pi);
+
+  a[1] = 12;
+
+  printf("*pi = %d\n", *pi);
+
+  pi = a;
+
+  pi--;
+  pi--;
+  pi--;
+  pi--;
+  pi--;
+  pi--;
+  pi--;
+  pi--;
+
+  printf("*pi = %d\n", *pi);
+
+  pi = a;
+
+  for (int i = 0; i < 7; i++) {
+    printf("a[%d]=%d\n", i, *(pi + i));
+  }
+
+  int multi[2][3];
+
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 3; j++) {
+      printf("multi[%d][%d]=%d\n", i, j, *((*(multi + i)) + j));
+    }
+  }
+
+  for (int i = 0; i < 7; i++) {
+    printf("a[%d]=%d\n", i, *(pi + i));
+  }
+
+  printf("Elaboro a\n");
+  elabora(a);
+
+  for (int i = 0; i < 7; i++) {
+    printf("a[%d]=%d\n", i, *(pi + i));
+  }
 
   exit(EXIT_SUCCESS);
 
