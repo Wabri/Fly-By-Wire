@@ -1,3 +1,7 @@
-*.swp
+# Vim swap files
+*.sw*
+
+# C binary default files and folders
 *.out
-fbf
+bin/
+
