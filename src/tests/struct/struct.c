@@ -24,6 +24,19 @@ struct Data {
 
 struct Data DataFine;
 
+union Livello {
+  char cLivello;
+  int iLivello;
+};
+
+struct LivelloUnion {
+  char cTipo;
+  union {
+    char cLivello;
+    int iLivello;
+  };
+};
+
 void stampaData(struct Data);
 void (*f)(struct Data);
 
@@ -50,6 +63,50 @@ int main(int argc, char *argv[]) {
   printf("Questa struttura non è riusabile: \n");
   printf("\t - %s\n", nonRiusabile.hello);
   printf("\t - %d\n", nonRiusabile.noName);
+
+  f(DataFine);
+
+  DataFine = DataInizio;
+
+  f(DataFine);
+
+  struct Data DataTest = {40, 12, 3333};
+
+  f(DataTest);
+
+  struct Data *pData;
+  
+  pData = &DataTest;
+
+  DataTest.iGiorno = 0;
+
+  pData->iAnno = 2020;
+
+  f(*pData);
+
+  f(DataTest);
+
+  union Livello LivelloCarburante;
+  LivelloCarburante.iLivello = 8;
+
+  struct LivelloUnion testStructUnion;
+  testStructUnion.cTipo = 'a';
+
+  typedef struct Data Data;
+
+  Data DataPost, DataPost2;
+
+  typedef struct Test {
+    int iCampo;
+    char cCampo;
+    char sCampo[];
+  } T;
+
+  T test1, test2;
+
+  test1.iCampo = 12;
+
+  printf("Test campo: %d\n", test1.iCampo);
 
   exit(EXIT_SUCCESS);
 }
