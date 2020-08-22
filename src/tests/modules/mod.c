@@ -1,8 +1,8 @@
 /* mod.c */
 
+#include "pal.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 /*****************************************************************************/
 /* Function prototypes */
@@ -15,6 +15,8 @@ int main(int argc, char *argv[]) {
   char stringa[100];
 
   reverse("ciaone", stringa);
+  printf("%d\n", palindrome("ciaone"));
+  printf("%d\n", palindrome("yoy"));
 
   printf("%s\n", stringa);
 
@@ -23,11 +25,3 @@ int main(int argc, char *argv[]) {
 
 /*****************************************************************************/
 /* Function Implementation */
-
-void reverse(char *string1, char *string2) {
-  int i = 0, j = 0, len = strlen(string1);
-  for (j = len - 1; j >= 0; j--, i++) {
-    string2[i] = string1[j];
-  }
-  string2[len] = '\0';
-}
