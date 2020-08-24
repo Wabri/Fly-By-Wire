@@ -1,4 +1,3 @@
-#include <bits/types/__FILE.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +11,7 @@ int main(int argc, char *argv[]) {
   printf("Inserisci un numero:");
   scanf("%d", &result);
   // Il print sotto genera una doppia stampa nonostante il figlio venga invocato
-  // dopo 
+  // dopo
   // printf("%d + ", result);
 
   int son = fork();
