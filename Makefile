@@ -1,5 +1,7 @@
 prefix_modules=src/tests/modules/
 prefix_strings=src/tests/strings/
+prefix_errors=src/tests/errors/
+prefix_process=src/tests/process/
 bindir=bin/
 
 all: run_mod
@@ -35,3 +37,18 @@ strings:
 	@ clang -c $(prefix_strings)strings.c
 clean_strings:
 	@ rm strings.o run
+
+errors:
+	@ clang -c $(prefix_errors)error.c
+	@ clang error.o -o run
+	@ ./run
+
+process:
+	@ clang -c $(prefix_process)process.c
+	@ clang process.o -o run
+	@ ./run
+
+summers:
+	@ clang -c $(prefix_process)summers.c
+	@ clang summers.o -o run
+	@ ./run 
