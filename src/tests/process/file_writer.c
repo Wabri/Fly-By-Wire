@@ -8,8 +8,9 @@ int main(int argc, char *argv[]) {
   if (argc > 1) {
     char content[100];
     char *sFile = argv[1];
-    FILE *pFile = fopen(sFile, "r+");
-    long lIFile = ftell(pFile);
+
+    printf("Inserisci una stringa: ");
+    scanf("%s", content);
 
     int son = fork();
     if (son < 0) {
@@ -17,7 +18,7 @@ int main(int argc, char *argv[]) {
       exit(EXIT_FAILURE);
     } else if (son != 0) {
       wait(&son);
-      fseek(pFile, lIFile, SEEK_SET);
+      FILE *pFile = fopen(sFile, "r");
       int iQuantity;
       iQuantity = fread(content, 1, 100, pFile);
 
@@ -25,11 +26,14 @@ int main(int argc, char *argv[]) {
         printf("something happened\n");
         exit(EXIT_FAILURE);
       }
-      printf("%s\n", content);
+
+      printf("Stringa letta dal padre: %s\n", content);
 
     } else {
-      scanf("%s", content);
-      fprintf(pFile, content);
+      FILE *pFile = fopen(sFile, "w");
+      fwrite(content, 1, 100, pFile);
+      printf("Stringa scritta dal figlio: %s\n", content);
+      exit(EXIT_SUCCESS);
     }
   }
 
