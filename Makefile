@@ -52,3 +52,8 @@ summers:
 	@ clang -c $(prefix_process)summers.c
 	@ clang summers.o -o run
 	@ ./run 
+
+file_writer:
+	@ clang -c $(prefix_process)file_writer.c
+	@ clang file_writer.o -o run
+	@ ./run ciao.txt

@@ -1,5 +1,4 @@
 #include "inc.h"
-#include <bits/types/__FILE.h>
 #include <stdio.h>
 #include <stdlib.h>
 
