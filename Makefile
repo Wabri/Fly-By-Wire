@@ -2,6 +2,7 @@ prefix_modules=src/tests/modules/
 prefix_strings=src/tests/strings/
 prefix_errors=src/tests/errors/
 prefix_process=src/tests/process/
+prefix_signals=src/tests/signals/
 bindir=bin/
 
 all: run_mod
@@ -57,3 +58,8 @@ file_writer:
 	@ clang -c $(prefix_process)file_writer.c
 	@ clang file_writer.o -o run
 	@ ./run ciao.txt
+
+signals:
+	@ clang -c $(prefix_signals)signals.c
+	@ clang signals.o -o run
+	@ ./run
