@@ -4,7 +4,8 @@
 #include <unistd.h>
 #include <wait.h>
 
-void handler(int signum) { wait(NULL); }
+void sigHandler(int signum);
+void sigHandler2(int signum);
 
 int main(int argc, char *argv[]) {
 
@@ -14,7 +15,7 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   } else if (son != 0) {
     // father
-    signal(SIGCHLD, handler);
+    signal(SIGCHLD, sigHandler);
     printf("Sono il padre\n");
   } else {
     // son
@@ -40,5 +41,24 @@ int main(int argc, char *argv[]) {
   sleep(3);
   printf("Ciaone\n");
 
+  signal(SIGINT, sigHandler2);
+
+  int son2 = fork();
+  if (son2 == 0) {
+    printf("Child PID %d PGRP %d waits\n", getpid(), getpgid(0));
+  } else if (son2 > 0) {
+    printf("Parent PID %d PGRP %d waits\n", getpid(), getpgid(0));
+  } else {
+    // forkr failed
+    exit(EXIT_FAILURE);
+  }
+  pause();
+
   exit(EXIT_SUCCESS);
+}
+
+void sigHandler(int signum) { wait(NULL); }
+
+void sigHandler2(int sig) {
+  printf("Process %d got a %d signal\n", getpid(), sig);
 }

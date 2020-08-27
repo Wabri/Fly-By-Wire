@@ -7,6 +7,9 @@ bindir=bin/
 
 all: run_mod
 
+clean:
+	@ rm -r *.o run ciao.txt bin/
+
 # Modules
 run_mod: install
 	@ ./$(bindir)run
@@ -62,4 +65,9 @@ file_writer:
 signals:
 	@ clang -c $(prefix_signals)signals.c
 	@ clang signals.o -o run
+	@ ./run
+
+toggle:
+	@ clang -c $(prefix_signals)toggle.c
+	@ clang toggle.o -o run
 	@ ./run
