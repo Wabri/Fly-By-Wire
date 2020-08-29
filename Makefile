@@ -3,7 +3,7 @@ prefix_strings=src/tests/strings/
 prefix_errors=src/tests/errors/
 prefix_process=src/tests/process/
 prefix_signals=src/tests/signals/
-prefix_comm=src/tests/communication/
+prefix_revcen=src/tests/RevisoreCensore/
 bindir=bin/
 
 all: run_mod
@@ -88,3 +88,8 @@ read:
 write:
 	@ clang -c $(prefix_comm)writer.c
 	@ clang writer.o -o writer
+
+rev_cen:
+	@ clang -c $(prefix_revcen)revcens.c
+	@ clang revcens.o -o run
+	@ ./run articolo.txt

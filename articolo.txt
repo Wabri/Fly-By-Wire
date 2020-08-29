@@ -1,0 +1,10 @@
+Titolo
+
+Questo è un testo per l'esercizio RevisoreCensore
+
+L'esercizio si trova dentro src/tests
+
+Il risultato finale dovrebbe essere l'eliminazione di tutti i caratteri uguali a c
+
+CCCCCCCCCCccccccccccccc Test c ccc Testcccc
+
