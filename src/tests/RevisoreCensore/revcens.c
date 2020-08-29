@@ -16,7 +16,7 @@
 #define RevCen "RCPipe"
 #define CenPub "CPPipe"
 #define Filter "c"
-#define MessLen 1+1
+#define MessLen 1
 
 int revisore(char *article, int messageLenght, char *pipeRevCenName);
 int censore(int messageLenght, char *pipeRevCenName, char *pipeCenPubName,
@@ -36,6 +36,8 @@ int main(int argc, char *argv[]) {
       // pubblicatore
       printf("Pubblicatore start\n");
 
+      sleep(4);
+
       unlink(CenPub);
       mknod(CenPub, S_IFIFO, 0);
       chmod(CenPub, 0660);
@@ -50,8 +52,10 @@ int main(int argc, char *argv[]) {
         int totCharRead = read(pipeCPId, content, MessLen);
 
         if (strcmp(content, "\0") || totCharRead == 0) {
+          printf("Fine: %s", content);
           break;
         }
+        printf("Pubblico: %s", content);
 
         printf("%s", content);
       }
@@ -88,8 +92,10 @@ int revisore(char *fileArticle, int messageLenght, char *pipeRevCenName) {
   while (1) {
     int iTotCharRead = fread(content, 1, messageLenght, pfArticle);
     if (iTotCharRead == 0) {
+      printf("Esco: %s", content);
       break;
     }
+    printf("Scrivo: %s", content);
     write(pipeId, content, messageLenght);
   }
 
@@ -130,10 +136,13 @@ int censore(int messageLenght, char *pipeRevCenName, char *pipeCenPubName,
     int totCharRead = read(pipeCPId, content, MessLen);
 
     if (strcmp(content, "\0") || totCharRead == 0) {
+      printf("Fine: %s", content);
       break;
     }
+    printf("Scrivo: %s", content);
 
     if (strcmp(content, filterChar) == 0) {
+      printf("Leggo: %s", content);
       write(pipeCPId, content, messageLenght);
     }
   }
