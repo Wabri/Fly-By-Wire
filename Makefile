@@ -3,6 +3,7 @@ prefix_strings=src/tests/strings/
 prefix_errors=src/tests/errors/
 prefix_process=src/tests/process/
 prefix_signals=src/tests/signals/
+prefix_comm=src/tests/communication/
 bindir=bin/
 
 all: run_mod
@@ -71,3 +72,19 @@ toggle:
 	@ clang -c $(prefix_signals)toggle.c
 	@ clang toggle.o -o run
 	@ ./run
+
+pipe:
+	@ clang -c $(prefix_comm)pipe.c
+	@ clang pipe.o -o run
+	@ ./run
+
+rd_wr: read write
+	@ ./reader && ./writer
+
+read:
+	@ clang -c $(prefix_comm)reader.c
+	@ clang reader.o -o reader
+
+write:
+	@ clang -c $(prefix_comm)writer.c
+	@ clang writer.o -o writer
