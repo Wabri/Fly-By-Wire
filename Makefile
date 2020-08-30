@@ -1,4 +1,4 @@
-prefix_modules=src/tests/modules/
+refix_modules=src/tests/modules/
 prefix_strings=src/tests/strings/
 prefix_errors=src/tests/errors/
 prefix_process=src/tests/process/
@@ -90,6 +90,6 @@ write:
 	@ clang writer.o -o writer
 
 rev_cen:
-	@ clang -c $(prefix_revcen)revcens.c
-	@ clang revcens.o -o run
+	@ clang -c $(prefix_revcen)revcens2.c
+	@ clang revcens2.o -o run
 	@ ./run articolo.txt
