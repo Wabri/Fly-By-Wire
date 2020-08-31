@@ -5,8 +5,11 @@
 // carattere
 
 #include <fcntl.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <wait.h>
 
@@ -16,7 +19,6 @@
 
 typedef struct PipeWithName {
   char *name;
-
 } PWN;
 
 int revisore(PWN *pipeRevisoreCensore, char *fileToRead);
@@ -26,12 +28,10 @@ int pubblicatore(PWN *pipeCensoreRevisore);
 
 int main(int argc, char *argv[]) {
 
-  PWN sRevisoreCensore;
-  PWN *pRevisoreCensore = &sRevisoreCensore;
+  PWN sRevisoreCensore, *pRevisoreCensore = &sRevisoreCensore;
   pRevisoreCensore->name = RCPipeName;
 
-  PWN sCensorePubblicatore;
-  PWN *pCensorePubblicatore = &sCensorePubblicatore;
+  PWN sCensorePubblicatore, *pCensorePubblicatore = &sCensorePubblicatore;
   pCensorePubblicatore->name = CPPipeName;
 
   if (fork() == 0) {
@@ -62,6 +62,16 @@ int revisore(PWN *pipeRevisoreCensore, char *fileToRead) {
   FILE *pfFile = fopen(fileToRead, "r");
   char sRead[1];
 
+  int fileDescriptor;
+  do {
+    fileDescriptor = open(pipeRevisoreCensore->name, O_WRONLY);
+
+    if (fileDescriptor == -1)
+      printf("Pipe Revisore Censore non ancora aperta\n");
+    sleep(1);
+  } while (fileDescriptor == -1);
+  printf("Pipe Revisore Censore agganciata dal revisore\n");
+
   while (1) {
     int charRead = fread(sRead, 1, 1, pfFile);
     if (charRead < 1) {
@@ -69,17 +79,10 @@ int revisore(PWN *pipeRevisoreCensore, char *fileToRead) {
       break;
     } else {
       // write to PRC
-      int fileDescriptor;
-      do {
-        fileDescriptor = open(pipeRevisoreCensore, O_WRONLY);
-
-        if (fileDescriptor == -1)
-          sleep(1);
-      } while (fileDescriptor == -1);
-
       write(fileDescriptor, sRead, 1);
+      printf("Read: %s", sRead);
 
-      sleep(3);
+      sleep(1);
     }
   }
 
@@ -90,16 +93,18 @@ int revisore(PWN *pipeRevisoreCensore, char *fileToRead) {
 
 int censore(PWN *pipeRevisoreCensore, PWN *pipeCensoreRevisore,
             char *charFilter) {
+  char sStringPipe[1] = "";
+  int characterRead = 1;
 
-  printf("Pipe Revisore Censore aperta\n");
   unlink(pipeRevisoreCensore->name);
   mknod(pipeRevisoreCensore->name, S_IFIFO, 0);
   chmod(pipeRevisoreCensore->name, 0660);
 
   int fileDescriptor = open(pipeRevisoreCensore->name, O_RDONLY);
-  char sStringPipe[1] = "";
-  int characterRead = 1;
-  while (characterRead > 0 | sStringPipe[0] != '\0') {
+  printf("Pipe Revisore Censore aperta dal censore\n");
+
+  while (characterRead > 0 ) {
+    printf("\n\n\ncamadonna\n\n\n");
     characterRead = read(fileDescriptor, sStringPipe, 1);
     // filtra se c altrimenti invia al pubblicatore
     printf("%c", sStringPipe[0]);
@@ -112,4 +117,7 @@ int censore(PWN *pipeRevisoreCensore, PWN *pipeCensoreRevisore,
   exit(EXIT_SUCCESS);
 }
 
-int pubblicatore(PWN *pipeCensoreRevisore) { return EXIT_SUCCESS; }
+int pubblicatore(PWN *pipeCensoreRevisore) {
+  printf("qui ci entri?");
+  return EXIT_SUCCESS;
+}
