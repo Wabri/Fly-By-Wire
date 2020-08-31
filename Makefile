@@ -4,6 +4,8 @@ prefix_errors=src/tests/errors/
 prefix_process=src/tests/process/
 prefix_signals=src/tests/signals/
 prefix_comm=src/tests/communication/
+prefix_sockcc=src/tests/sockets_cc/
+prefix_sockes=src/tests/sockets_es/
 bindir=bin/
 
 all: run_mod
@@ -88,3 +90,29 @@ read:
 write:
 	@ clang -c $(prefix_comm)writer.c
 	@ clang writer.o -o writer
+
+ch_ck: chef cook
+	@ ./chef &
+	@ ./cook 
+	@ ./cook 
+	@ ./cook 
+	@ ./cook 
+
+cook:
+	@ clang -c $(prefix_sockcc)cook.c
+	@ clang cook.o -o cook
+
+chef:
+	@ clang -c $(prefix_sockcc)chef.c
+	@ clang chef.o -o chef
+
+echo_c_s: eserver eclient
+
+
+eserver:
+	@ clang -c $(prefix_sockes)echoserver.c
+	@ clang echoserver.o -o server
+
+eclient:
+	@ clang -c $(prefix_sockes)echoclient.c
+	@ clang echoclient.o -o client
