@@ -40,9 +40,9 @@ int main(int argc, char *argv[]) {
 
 void printEcho(int fd) {
   char line[255];
+  printf("Scrivi qualcosa: ");
+  scanf("%[^\n]", line);
 
-  printf("Scrivi qualcosa:\n");
-  scanf("%[^\n]",line);
-
-  write(fd, line, strlen(line) +1);
+  write(fd, line, strlen(line) + 1);
+  printf("\n");
 }

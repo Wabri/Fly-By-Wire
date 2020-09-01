@@ -81,7 +81,7 @@ pipe:
 	@ ./run
 
 rd_wr: read write
-	@ ./reader && ./writer
+	@ ./reader & ./writer & ./writer
 
 read:
 	@ clang -c $(prefix_comm)reader.c
