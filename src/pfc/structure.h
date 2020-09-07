@@ -12,7 +12,11 @@ typedef struct gpgll {
   char *sChecksum;
 } GPGLL;
 
+typedef struct rawElement {
+  char *element;
+  struct rawElement *next;
+} RawElement;
+
 int newRecordNMEA(PFC *, char *);
 
-int gpgllExtractFrom(GPGLL *, char *);
-
+int gpgllRawElementExtractFrom(RawElement *, char *);

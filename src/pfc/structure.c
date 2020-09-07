@@ -5,8 +5,33 @@
 #include <string.h>
 #include <unistd.h>
 
-int gpgllExtractFrom(GPGLL *pGPGLL, char *sSource) {
-  // TODO
+int gpgllRawElementExtractFrom(RawElement *prGPGLL, char *sSource) {
+  int iTemp[strlen(sSource) + 1];
+  int iCounter = 0;
+  for (int i = 0; i <= strlen(sSource); i++) {
+    if (sSource[i] == ',') {
+      iTemp[iCounter++] = i;
+    } else if (sSource[i] == '\0') {
+      iTemp[iCounter++] = i;
+    }
+  }
+  RawElement *pRawElement = prGPGLL;
+  for (int i = 0; i < iCounter; i++) {
+    pRawElement->element = malloc(sizeof(sSource));
+    strExtrInterval(pRawElement->element, sSource, iTemp[i] + 1,
+                    iTemp[i + 1] - 1);
+    //printf("%s\n", pRawElement->element);
+    printf("%d\n",iCounter);
+    if (i < iCounter) {
+      printf("next");
+      pRawElement->next = (RawElement *)malloc(sizeof(RawElement));
+      pRawElement = pRawElement->next;
+    }
+    if (i == iCounter - 2) {
+      printf("null");
+      pRawElement->next = NULL;
+    }
+  }
   return 0;
 }
 
@@ -23,8 +48,9 @@ int newRecordNMEA(PFC *ppfc, char *sElement) {
     fgets(sLine, 255, pFile);
     strExtrSeparator(sRecordHead, sLine, ",");
     if (strcmp(sRecordHead, sElement) == 0) {
-      GPGLL gpgll, *pGPGLL = &gpgll;
-      gpgllExtractFrom(pGPGLL, sLine);
+      RawElement *prGPGLL = (RawElement *)malloc(sizeof(RawElement));
+      gpgllRawElementExtractFrom(prGPGLL, sLine);
+      // printf("%s\n", prGPGLL->element);
       // TODO
       break;
     }
