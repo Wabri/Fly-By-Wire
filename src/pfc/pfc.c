@@ -1,3 +1,4 @@
+#include "../constants.h"
 #include "structure.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +16,7 @@ int main(int argc, char *argv[]) {
     ppfc1->name = "PFC1";
     ppfc1->filePath = "resources/G18.txt";
     printf("%s Inizializzato con successo \n", ppfc1->name);
-    newRecordNMEA(ppfc1, "$GPGLL");
+    newRecordNMEA(ppfc1, PFC_1_SENTENCE);
     exit(EXIT_SUCCESS);
   }
 
@@ -26,7 +27,7 @@ int main(int argc, char *argv[]) {
     ppfc2->name = "PFC2";
     ppfc2->filePath = "resources/G18.txt";
     printf("%s Inizializzato con successo \n", ppfc2->name);
-    newRecordNMEA(ppfc2, "$GPVTG");
+    newRecordNMEA(ppfc2, PFC_2_SENTENCE);
     exit(EXIT_SUCCESS);
   }
 
@@ -37,7 +38,7 @@ int main(int argc, char *argv[]) {
     ppfc3->name = "PFC3";
     ppfc3->filePath = "resources/G18.txt";
     printf("%s Inizializzato con successo \n", ppfc3->name);
-    newRecordNMEA(ppfc3, "$GPGSA");
+    newRecordNMEA(ppfc3, PFC_3_SENTENCE);
     exit(EXIT_SUCCESS);
   }
 
