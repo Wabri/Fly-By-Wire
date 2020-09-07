@@ -7,28 +7,26 @@
 
 int gpgllRawElementExtractFrom(RawElement *prGPGLL, char *sSource) {
   int iTemp[strlen(sSource) + 1];
-  int iCounter = 0;
+  int iElementCounter = 0;
   for (int i = 0; i <= strlen(sSource); i++) {
     if (sSource[i] == ',') {
-      iTemp[iCounter++] = i;
+      iTemp[iElementCounter++] = i;
     } else if (sSource[i] == '\0') {
-      iTemp[iCounter++] = i;
+      iTemp[iElementCounter++] = i;
     }
   }
   RawElement *pRawElement = prGPGLL;
-  for (int i = 0; i < iCounter; i++) {
+  for (int i = 0; i < iElementCounter - 1; i++) {
     pRawElement->element = malloc(sizeof(sSource));
     strExtrInterval(pRawElement->element, sSource, iTemp[i] + 1,
                     iTemp[i + 1] - 1);
-    //printf("%s\n", pRawElement->element);
-    printf("%d\n",iCounter);
-    if (i < iCounter) {
-      printf("next");
+    // printf("%s\n", pRawElement->element);
+    // printf("%d\n",iElementCounter);
+    if (i < iElementCounter) {
       pRawElement->next = (RawElement *)malloc(sizeof(RawElement));
       pRawElement = pRawElement->next;
     }
-    if (i == iCounter - 2) {
-      printf("null");
+    if (i == iElementCounter - 2) {
       pRawElement->next = NULL;
     }
   }
@@ -50,13 +48,17 @@ int newRecordNMEA(PFC *ppfc, char *sElement) {
     if (strcmp(sRecordHead, sElement) == 0) {
       RawElement *prGPGLL = (RawElement *)malloc(sizeof(RawElement));
       gpgllRawElementExtractFrom(prGPGLL, sLine);
-      // printf("%s\n", prGPGLL->element);
+      //printf("%s\n", prGPGLL->element);
+      //prGPGLL = prGPGLL->next;
+      //printf("%s\n", prGPGLL->element);
+      //prGPGLL = prGPGLL->next;
+      //printf("%s\n", prGPGLL->element);
       // TODO
       break;
     }
     sleep(2);
   };
-  printf("%s found: %s", sElement, sLine);
+  // printf("%s found: %s", sElement, sLine);
   fclose(pFile);
   return 0;
 }
