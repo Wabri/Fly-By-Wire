@@ -1,5 +1,7 @@
-# Vim swap files
+# Vim 
 *.sw*
+.session.vim
+Session.vim
 
 # Binaries
 bin/
