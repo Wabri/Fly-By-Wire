@@ -19,7 +19,7 @@ void printList(List *l) {
     printf("valore: %d\n", lC->data);
     c++;
   }
-  if (c==10) {
+  if (c == 10) {
     printf("Stop, to many cycles\n");
   }
 }
@@ -86,6 +86,18 @@ int main(int argc, char *argv[]) {
   lB.next = &lA;
   printf("Stampo lA\n");
   printList(&lA);
+
+  struct temp {
+    int t1;
+    struct temp *next;
+  };
+
+  struct temp *y1 = malloc(sizeof(struct temp));
+  struct temp *y2 = y1;
+  y1->t1 = 1;
+  y1->next = malloc(sizeof(struct temp)), y1 = y1->next;
+  y1->t1 = 2;
+  printf("%d\n", y2->t1);
 
   exit(EXIT_SUCCESS);
 }
