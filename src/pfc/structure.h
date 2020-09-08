@@ -17,6 +17,8 @@ typedef struct rawElement {
   struct rawElement *next;
 } RawElement;
 
-int newRecordNMEA(PFC *, char *);
+void extractRawElements(RawElement *, char *);
 
-int gpgllRawElementExtractFrom(RawElement *, char *);
+void extractGPGLL(GPGLL *, RawElement *);
+
+void newRecordNMEA(PFC *, char *);
