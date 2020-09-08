@@ -20,14 +20,14 @@ void newRecordNMEA(PFC *ppfc, char *sElement) {
     if (strcmp(sRecordHead, sElement) == 0) {
       RawElement *pRawElement = (RawElement *)malloc(sizeof(RawElement));
       extractRawElements(pRawElement, sLine);
-      // TODO: extract gpgll element from raw
       GPGLL *pGPGLL = (GPGLL *)malloc(sizeof(GPGLL));
       extractGPGLL(pGPGLL, pRawElement);
+      printGPGLL(pGPGLL);
       break;
     }
     sleep(2);
   };
-  //printf("%s found: %s", sElement, sLine);
+  // printf("%s found: %s", sElement, sLine);
   fclose(pFile);
 }
 
@@ -54,4 +54,33 @@ void extractRawElements(RawElement *pRawElement, char *sSource) {
       pRawElementIterator->next = NULL;
     }
   }
+}
+
+void extractGPGLL(GPGLL *pGPGLL, RawElement *pRawElement) {
+  RawElement *pRawElementTemp = pRawElement;
+  // - 4424.8422 latitude
+  pGPGLL->fCurrentLatitude = atof(pRawElementTemp->element);
+  pRawElementTemp = pRawElementTemp->next;
+  // - N Meridian
+  pGPGLL->cMeridianDirection = pRawElementTemp->element[0];
+  pRawElementTemp = pRawElementTemp->next;
+  // - 00852.8469 longitude
+  pGPGLL->fCurrentLongitude = atof(pRawElementTemp->element);
+  pRawElementTemp = pRawElementTemp->next;
+  // - E parallel
+  pGPGLL->cParallelDirection = pRawElementTemp->element[0];
+  pRawElementTemp = pRawElementTemp->next;
+  // - 122230 direction
+  pGPGLL->iFixTaken = atoi(pRawElementTemp->element);
+  pRawElementTemp = pRawElementTemp->next;
+  // - V*3B Checksum
+  pGPGLL->sDataValid = pRawElementTemp->element;
+}
+
+void printGPGLL(GPGLL *pGPGLL) {
+  printf("Latitude: %f, Meridian direction: %c, Longitude: %f, Parallel "
+         "direction: %c, Taken: %d, DataValid: %s",
+         pGPGLL->fCurrentLatitude, pGPGLL->cMeridianDirection,
+         pGPGLL->fCurrentLongitude, pGPGLL->cParallelDirection,
+         pGPGLL->iFixTaken, pGPGLL->sDataValid);
 }
