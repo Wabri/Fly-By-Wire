@@ -5,28 +5,36 @@
 #include <string.h>
 #include <unistd.h>
 
-void newRecordNMEA(PFC *ppfc, char *sElement) {
+void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
   char sLine[255];
   char sRecordHead[255];
   FILE *pFile;
-  pFile = fopen(ppfc->filePath, "r");
+  PTP *pPTP = pPointToPoint;
+  pFile = fopen(pPFC->filePath, "r");
   if (pFile == NULL) {
-    printf("Error! opening file\n");
+    // printf("Error! opening file\n");
     exit(EXIT_FAILURE);
   }
   while (1) {
-    fgets(sLine, 255, pFile);
+    if (fgets(sLine, 255, pFile) == NULL) {
+      break;
+    }
     strExtrSeparator(sRecordHead, sLine, ",");
     if (strcmp(sRecordHead, sElement) == 0) {
       RawElement *pRawElement = (RawElement *)malloc(sizeof(RawElement));
       extractRawElements(pRawElement, sLine);
-      GPGLL *pGPGLL = (GPGLL *)malloc(sizeof(GPGLL));
-      extractGPGLL(pGPGLL, pRawElement);
-      printGPGLL(pGPGLL);
-      break;
+      GLL *pGLL = (GLL *)malloc(sizeof(GLL));
+      extractGLL(pGLL, pRawElement);
+      addPoint(pPTP, pGLL);
+      if (pPTP->end != NULL) {
+        computeDistance(pPTP);
+        pPTP = pPTP->next;
+      }
+      // TODO: schianta qui in qualche ciclo
     }
-    sleep(2);
+    // sleep(1);
   };
+  printf("ciao");
   // printf("%s found: %s", sElement, sLine);
   fclose(pFile);
 }
@@ -56,31 +64,57 @@ void extractRawElements(RawElement *pRawElement, char *sSource) {
   }
 }
 
-void extractGPGLL(GPGLL *pGPGLL, RawElement *pRawElement) {
+void extractGLL(GLL *pGLL, RawElement *pRawElement) {
   RawElement *pRawElementTemp = pRawElement;
   // - 4424.8422 latitude
-  pGPGLL->fCurrentLatitude = atof(pRawElementTemp->element);
+  pGLL->fCurrentLatitude = atof(pRawElementTemp->element);
   pRawElementTemp = pRawElementTemp->next;
   // - N Meridian
-  pGPGLL->cMeridianDirection = pRawElementTemp->element[0];
+  pGLL->cMeridianDirection = pRawElementTemp->element[0];
   pRawElementTemp = pRawElementTemp->next;
   // - 00852.8469 longitude
-  pGPGLL->fCurrentLongitude = atof(pRawElementTemp->element);
+  pGLL->fCurrentLongitude = atof(pRawElementTemp->element);
   pRawElementTemp = pRawElementTemp->next;
   // - E parallel
-  pGPGLL->cParallelDirection = pRawElementTemp->element[0];
+  pGLL->cParallelDirection = pRawElementTemp->element[0];
   pRawElementTemp = pRawElementTemp->next;
   // - 122230 direction
-  pGPGLL->iFixTaken = atoi(pRawElementTemp->element);
+  pGLL->iFixTaken = atoi(pRawElementTemp->element);
   pRawElementTemp = pRawElementTemp->next;
   // - V*3B Checksum
-  pGPGLL->sDataValid = pRawElementTemp->element;
+  pGLL->sDataValid = pRawElementTemp->element;
 }
 
-void printGPGLL(GPGLL *pGPGLL) {
+void printGLL(GLL *pGLL) {
   printf("Latitude: %f, Meridian direction: %c, Longitude: %f, Parallel "
          "direction: %c, Taken: %d, DataValid: %s",
-         pGPGLL->fCurrentLatitude, pGPGLL->cMeridianDirection,
-         pGPGLL->fCurrentLongitude, pGPGLL->cParallelDirection,
-         pGPGLL->iFixTaken, pGPGLL->sDataValid);
+         pGLL->fCurrentLatitude, pGLL->cMeridianDirection,
+         pGLL->fCurrentLongitude, pGLL->cParallelDirection, pGLL->iFixTaken,
+         pGLL->sDataValid);
+}
+
+void addPoint(PTP *pPTP, GLL *pGLL) {
+  if (pPTP->start == NULL) {
+    pPTP->start = pGLL;
+  } else if (pPTP->end == NULL) {
+    pPTP->end = pGLL;
+  } else {
+    pPTP->next = malloc(sizeof(PTP));
+    pPTP->next->start = pPTP->end;
+    pPTP->next->end = pGLL;
+  }
+}
+
+void computeDistance(PTP *pPTP) {
+  // https://stackoverflow.com/questions/365826/calculate-distance-between-2-gps-coordinates
+  // ricordarsi di operare in metri, in input si ha 4 cifre i metri sono a 2
+  pPTP->lenght = 1;
+}
+
+void printPTPLength(PTP *pPTP) {
+  while (pPTP->start != NULL) {
+    printf("Start: %f, End: %f, Lenght: %f\n", pPTP->start->fCurrentLatitude,
+           pPTP->end->fCurrentLongitude, pPTP->lenght);
+    pPTP = pPTP->next;
+  }
 }

@@ -4,24 +4,37 @@ typedef struct pfc {
   char *filePath;
 } PFC;
 
-typedef struct gpgll {
-  float fCurrentLatitude; // eg: Latitude 49 deg. 16.45 min.
+typedef struct gll {
+  float fCurrentLatitude;  // eg: Latitude 49 deg. 16.45 min.
   char cMeridianDirection; // eg: North
-  float fCurrentLongitude; // eg: Longitude 123 deg. 11.12 min. 
+  float fCurrentLongitude; // eg: Longitude 123 deg. 11.12 min.
   char cParallelDirection; // eg: West
   unsigned int iFixTaken;  // eg: Fix taken at 22:54:44 UTC
-  char *sDataValid; // eg: Data valid
-} GPGLL;
+  char *sDataValid;        // eg: Data valid
+} GLL;
 
 typedef struct rawElement {
   char *element;
   struct rawElement *next;
 } RawElement;
 
+typedef struct pointToPoint {
+  GLL *start;
+  GLL *end;
+  float lenght;
+  struct pointToPoint *next;
+} PTP;
+
+void importNMEA(PFC *, PTP *, char *);
+
 void extractRawElements(RawElement *, char *);
 
-void extractGPGLL(GPGLL *, RawElement *);
+void extractGLL(GLL *, RawElement *);
 
-void newRecordNMEA(PFC *, char *);
+void printGLL(GLL *);
 
-void printGPGLL(GPGLL *);
+void addPoint(PTP *, GLL *);
+
+void computeDistance(PTP *);
+
+void printPTPLength(PTP *);
