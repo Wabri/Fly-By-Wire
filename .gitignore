@@ -6,6 +6,9 @@ Session.vim
 # Binaries
 bin/
 
+# Binaries
+logs/
+
 # Prerequisites
 *.d
 
