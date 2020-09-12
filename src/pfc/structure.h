@@ -1,4 +1,6 @@
 
+#include <stdio.h>
+
 typedef struct pfc {
   char *name;
   char *filePath;
@@ -35,6 +37,8 @@ void extractGLL(GLL *, RawElement *);
 void printGLL(GLL *);
 
 void printPFC(PFC *);
+
+void fprintPFC(FILE *, PFC *);
 
 void addPoint(PTP *, GLL *);
 

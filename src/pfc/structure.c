@@ -1,3 +1,4 @@
+
 #include "structure.h"
 #include "../utility/string.h"
 #include <stdio.h>
@@ -13,15 +14,12 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
   pFile = fopen(pPFC->filePath, "r");
   pLog = fopen(pPFC->fileLog, "w+");
 
-  if (pFile == NULL) {
+  if (pFile == NULL || pFile == NULL) {
     // printf("Error! opening file\n");
     exit(EXIT_FAILURE);
   }
-  while (1) {
-    if (fgets(sLine, 255, pFile) == NULL) {
-      fprintf(pLog, "%d stop at %s\n", getpid(), sLine);
-      break;
-    }
+
+  while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
     strExtrSeparator(sRecordHead, sLine, ",");
     fprintf(pLog, "%d compare %s with  %s\n", getpid(), sElement, sRecordHead);
     if (strcmp(sRecordHead, sElement) == 0) {
@@ -35,11 +33,13 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
         pPTP = pPTP->next;
       }
       fprintf(pLog, "%d catch: %s\n", getpid(), sLine);
-      // TODO: schianta qui in qualche ciclo
+      // TODO: c'è un problema nella scrittura sul log
     }
-    // sleep(1);
+    //sleep(1);
   };
+
   fclose(pFile);
+  fclose(pLog);
 }
 
 void extractRawElements(RawElement *pRawElement, char *sSource) {
@@ -99,6 +99,12 @@ void printGLL(GLL *pGLL) {
 void printPFC(PFC *pPFC) {
   printf("Name: %s\n File Path: %s\n File Logs: %s\n", pPFC->name,
          pPFC->filePath, pPFC->fileLog);
+}
+
+void fprintPFC(FILE *pFile, PFC *pPFC) {
+  fprintf(pFile, "Name: %s\n", pPFC->name);
+  fprintf(pFile, "File Path: %s\n", pPFC->filePath);
+  fprintf(pFile, "File Logs: %s\n", pPFC->fileLog);
 }
 
 void addPoint(PTP *pPTP, GLL *pGLL) {
