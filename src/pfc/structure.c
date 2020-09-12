@@ -8,18 +8,22 @@
 void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
   char sLine[255];
   char sRecordHead[255];
-  FILE *pFile;
+  FILE *pFile, *pLog;
   PTP *pPTP = pPointToPoint;
   pFile = fopen(pPFC->filePath, "r");
+  pLog = fopen(pPFC->fileLog, "w+");
+
   if (pFile == NULL) {
     // printf("Error! opening file\n");
     exit(EXIT_FAILURE);
   }
   while (1) {
     if (fgets(sLine, 255, pFile) == NULL) {
+      fprintf(pLog, "%d stop at %s\n", getpid(), sLine);
       break;
     }
     strExtrSeparator(sRecordHead, sLine, ",");
+    fprintf(pLog, "%d compare %s with  %s\n", getpid(), sElement, sRecordHead);
     if (strcmp(sRecordHead, sElement) == 0) {
       RawElement *pRawElement = (RawElement *)malloc(sizeof(RawElement));
       extractRawElements(pRawElement, sLine);
@@ -30,12 +34,11 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
         computeDistance(pPTP);
         pPTP = pPTP->next;
       }
+      fprintf(pLog, "%d catch: %s\n", getpid(), sLine);
       // TODO: schianta qui in qualche ciclo
     }
     // sleep(1);
   };
-  printf("ciao");
-  // printf("%s found: %s", sElement, sLine);
   fclose(pFile);
 }
 
@@ -91,6 +94,11 @@ void printGLL(GLL *pGLL) {
          pGLL->fCurrentLatitude, pGLL->cMeridianDirection,
          pGLL->fCurrentLongitude, pGLL->cParallelDirection, pGLL->iFixTaken,
          pGLL->sDataValid);
+}
+
+void printPFC(PFC *pPFC) {
+  printf("Name: %s\n File Path: %s\n File Logs: %s\n", pPFC->name,
+         pPFC->filePath, pPFC->fileLog);
 }
 
 void addPoint(PTP *pPTP, GLL *pGLL) {

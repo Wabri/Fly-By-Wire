@@ -2,6 +2,7 @@
 typedef struct pfc {
   char *name;
   char *filePath;
+  char *fileLog;
 } PFC;
 
 typedef struct gll {
@@ -32,6 +33,8 @@ void extractRawElements(RawElement *, char *);
 void extractGLL(GLL *, RawElement *);
 
 void printGLL(GLL *);
+
+void printPFC(PFC *);
 
 void addPoint(PTP *, GLL *);
 
