@@ -1,4 +1,6 @@
 #define PFC_DEFAULT_SENTENCE "$GPGLL"
+#define G18_PATH "resources/G18.txt"
+#define LOGS_PATH "logs/"
 
 // Definition of every pfc
 #define PFC_1_SENTENCE PFC_DEFAULT_SENTENCE
