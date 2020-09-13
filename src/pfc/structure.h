@@ -8,9 +8,9 @@ typedef struct pfc {
 } PFC;
 
 typedef struct gll {
-  float fCurrentLatitude;  // eg: Latitude 49 deg. 16.45 min.
+  float fLatitude;  // eg: Latitude 49 deg. 16.45 min.
   char cMeridianDirection; // eg: North
-  float fCurrentLongitude; // eg: Longitude 123 deg. 11.12 min.
+  float fLongitude; // eg: Longitude 123 deg. 11.12 min.
   char cParallelDirection; // eg: West
   unsigned int iFixTaken;  // eg: Fix taken at 22:54:44 UTC
   char *sDataValid;        // eg: Data valid
@@ -22,9 +22,8 @@ typedef struct rawElement {
 } RawElement;
 
 typedef struct pointToPoint {
-  GLL *start;
-  GLL *end;
-  float lenght;
+  GLL *point;
+  float traveledDistance;
   struct pointToPoint *next;
 } PTP;
 
@@ -42,6 +41,8 @@ void fprintPFC(FILE *, PFC *);
 
 void addPoint(PTP *, GLL *);
 
-void computeDistance(PTP *);
+float computeDistance(GLL *, GLL *);
 
-void printPTPLength(PTP *);
+void printPTPs(PTP *);
+
+void printPTP(PTP *);

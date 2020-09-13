@@ -20,11 +20,7 @@ void run(char *name, char *filePath, char *logPath, char *sentence) {
   strcat(logPathName, ppfc->name);
   strcat(logPathName, ".txt");
 
-  // printf("%s\n", filePath);
-  // printf("%s\n", logPathName);
-
   ppfc->fileLog = logPathName;
 
   importNMEA(ppfc, pptp, sentence);
-  printPTPLength(pptp);
 }

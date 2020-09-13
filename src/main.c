@@ -12,6 +12,12 @@ int main(int argc, char *argv[]) {
 
   printf("Hallo\n");
 
+  /* run("PFC1", G18_PATH, LOGS_PATH, PFC_1_SENTENCE); */
+  /* run("PFC2", G18_PATH, LOGS_PATH, PFC_2_SENTENCE); */
+  /* run("PFC3", G18_PATH, LOGS_PATH, PFC_3_SENTENCE); */
+
+  /* exit(EXIT_SUCCESS); */
+
   // PFC1
   if (fork() == 0) {
     run("PFC1", G18_PATH, LOGS_PATH, PFC_1_SENTENCE);

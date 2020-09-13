@@ -15,10 +15,8 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
   pLog = fopen(pPFC->fileLog, "w+");
 
   if (pFile == NULL || pFile == NULL) {
-    // printf("Error! opening file\n");
     exit(EXIT_FAILURE);
   }
-
   while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
     strExtrSeparator(sRecordHead, sLine, ",");
     fprintf(pLog, "%d compare %s with  %s\n", getpid(), sElement, sRecordHead);
@@ -28,14 +26,12 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
       GLL *pGLL = (GLL *)malloc(sizeof(GLL));
       extractGLL(pGLL, pRawElement);
       addPoint(pPTP, pGLL);
-      if (pPTP->end != NULL) {
-        computeDistance(pPTP);
+      if (NULL != pPTP->next) {
         pPTP = pPTP->next;
       }
-      fprintf(pLog, "%d catch: %s\n", getpid(), sLine);
-      // TODO: c'è un problema nella scrittura sul log
+      fprintf(pLog, "%d catch: %s", getpid(), sLine);
     }
-    //sleep(1);
+    // sleep(1);
   };
 
   fclose(pFile);
@@ -70,13 +66,13 @@ void extractRawElements(RawElement *pRawElement, char *sSource) {
 void extractGLL(GLL *pGLL, RawElement *pRawElement) {
   RawElement *pRawElementTemp = pRawElement;
   // - 4424.8422 latitude
-  pGLL->fCurrentLatitude = atof(pRawElementTemp->element);
+  pGLL->fLatitude = atof(pRawElementTemp->element);
   pRawElementTemp = pRawElementTemp->next;
   // - N Meridian
   pGLL->cMeridianDirection = pRawElementTemp->element[0];
   pRawElementTemp = pRawElementTemp->next;
   // - 00852.8469 longitude
-  pGLL->fCurrentLongitude = atof(pRawElementTemp->element);
+  pGLL->fLongitude = atof(pRawElementTemp->element);
   pRawElementTemp = pRawElementTemp->next;
   // - E parallel
   pGLL->cParallelDirection = pRawElementTemp->element[0];
@@ -91,8 +87,8 @@ void extractGLL(GLL *pGLL, RawElement *pRawElement) {
 void printGLL(GLL *pGLL) {
   printf("Latitude: %f, Meridian direction: %c, Longitude: %f, Parallel "
          "direction: %c, Taken: %d, DataValid: %s",
-         pGLL->fCurrentLatitude, pGLL->cMeridianDirection,
-         pGLL->fCurrentLongitude, pGLL->cParallelDirection, pGLL->iFixTaken,
+         pGLL->fLatitude, pGLL->cMeridianDirection,
+         pGLL->fLongitude, pGLL->cParallelDirection, pGLL->iFixTaken,
          pGLL->sDataValid);
 }
 
@@ -108,27 +104,33 @@ void fprintPFC(FILE *pFile, PFC *pPFC) {
 }
 
 void addPoint(PTP *pPTP, GLL *pGLL) {
-  if (pPTP->start == NULL) {
-    pPTP->start = pGLL;
-  } else if (pPTP->end == NULL) {
-    pPTP->end = pGLL;
+  if (pPTP->point == NULL) {
+    pPTP->point = pGLL;
+    pPTP->traveledDistance = 0;
   } else {
-    pPTP->next = malloc(sizeof(PTP));
-    pPTP->next->start = pPTP->end;
-    pPTP->next->end = pGLL;
+    pPTP->next = (PTP *)malloc(sizeof(PTP));
+    pPTP->next->point = pGLL;
+    pPTP->next->traveledDistance = computeDistance(pPTP->point, pGLL);
   }
 }
 
-void computeDistance(PTP *pPTP) {
+float computeDistance(GLL *start, GLL *end) {
   // https://stackoverflow.com/questions/365826/calculate-distance-between-2-gps-coordinates
   // ricordarsi di operare in metri, in input si ha 4 cifre i metri sono a 2
-  pPTP->lenght = 1;
+  // TODO: Now the big formula need to be apply
+  /* float dLatitude = degreesToRadians(start->fLatitude - end->fLatitude); */
+  /* float dLongitude = degreesToRadians(start->fLongitude - end->fLongitude); */
+  return 1;
 }
 
-void printPTPLength(PTP *pPTP) {
-  while (pPTP->start != NULL) {
-    printf("Start: %f, End: %f, Lenght: %f\n", pPTP->start->fCurrentLatitude,
-           pPTP->end->fCurrentLongitude, pPTP->lenght);
+void printPTPs(PTP *pPTP) {
+  while (pPTP->point != NULL) {
+    printPTP(pPTP);
     pPTP = pPTP->next;
   }
+}
+
+void printPTP(PTP *pPTP) {
+  printf("Start: %d, Traveld Distance: %f\n", pPTP->point->iFixTaken,
+         pPTP->traveledDistance);
 }
