@@ -25,6 +25,7 @@ pfc: utility constants
 
 utility:
 	@ $(CC) -c $(PREFIX_UTIL)string.c -o $(BINDIR)string.o
+	@ $(CC) -c $(PREFIX_UTIL)angles.c -o $(BINDIR)angles.o
 
 constants:
 	@ $(CC) -c $(PREFIX_GLOBAL)constants.c -o $(BINDIR)constants.o
