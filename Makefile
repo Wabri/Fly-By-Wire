@@ -14,7 +14,7 @@ clean:
 	@ mkdir $(LOGDIR)
 
 install: main
-	@ $(CC) $(BINDIR)*.o -o run
+	@ $(CC) $(BINDIR)*.o -o run -lm
 
 main: pfc constants
 	@ $(CC) -c $(PREFIX_GLOBAL)main.c -o $(BINDIR)main.o
