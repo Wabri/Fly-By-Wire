@@ -1,5 +1,6 @@
 
 #include "structure.h"
+#include "../utility/angles.h"
 #include "../utility/string.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -87,9 +88,8 @@ void extractGLL(GLL *pGLL, RawElement *pRawElement) {
 void printGLL(GLL *pGLL) {
   printf("Latitude: %f, Meridian direction: %c, Longitude: %f, Parallel "
          "direction: %c, Taken: %d, DataValid: %s",
-         pGLL->fLatitude, pGLL->cMeridianDirection,
-         pGLL->fLongitude, pGLL->cParallelDirection, pGLL->iFixTaken,
-         pGLL->sDataValid);
+         pGLL->fLatitude, pGLL->cMeridianDirection, pGLL->fLongitude,
+         pGLL->cParallelDirection, pGLL->iFixTaken, pGLL->sDataValid);
 }
 
 void printPFC(PFC *pPFC) {
@@ -105,12 +105,16 @@ void fprintPFC(FILE *pFile, PFC *pPFC) {
 
 void addPoint(PTP *pPTP, GLL *pGLL) {
   if (pPTP->point == NULL) {
+      // TODO: non entra mai qui
     pPTP->point = pGLL;
     pPTP->traveledDistance = 0;
   } else {
     pPTP->next = (PTP *)malloc(sizeof(PTP));
-    pPTP->next->point = pGLL;
-    pPTP->next->traveledDistance = computeDistance(pPTP->point, pGLL);
+pPTP->next->point = pGLL;
+printf("test gll %f\n", pGLL->fLatitude);
+    printf("test ptp %f\n", pPTP->point->fLatitude);
+    pPTP->next->traveledDistance =
+        computeDistance(pPTP->point, pPTP->next->point);
   }
 }
 
@@ -119,7 +123,12 @@ float computeDistance(GLL *start, GLL *end) {
   // ricordarsi di operare in metri, in input si ha 4 cifre i metri sono a 2
   // TODO: Now the big formula need to be apply
   /* float dLatitude = degreesToRadians(start->fLatitude - end->fLatitude); */
-  /* float dLongitude = degreesToRadians(start->fLongitude - end->fLongitude); */
+  /* float dLongitude = degreesToRadians(start->fLongitude - end->fLongitude);
+   */
+  float temp = degreesToRadians(30.2);
+  printf("%f \n", temp);
+  printf("%f \n", start->fLatitude);
+  printf("%f \n", start->fLongitude);
   return 1;
 }
 
