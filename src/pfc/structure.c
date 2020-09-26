@@ -1,7 +1,9 @@
 
 #include "structure.h"
+#include "../constants.h"
 #include "../utility/angles.h"
 #include "../utility/string.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,9 +17,10 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
   pFile = fopen(pPFC->filePath, "r");
   pLog = fopen(pPFC->fileLog, "w+");
 
-  if (pFile == NULL || pFile == NULL) {
+  if (pFile == NULL) {
     exit(EXIT_FAILURE);
   }
+
   while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
     strExtrSeparator(sRecordHead, sLine, ",");
     fprintf(pLog, "%d compare %s with  %s\n", getpid(), sElement, sRecordHead);
@@ -27,6 +30,7 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
       GLL *pGLL = (GLL *)malloc(sizeof(GLL));
       extractGLL(pGLL, pRawElement);
       addPoint(pPTP, pGLL);
+      printf("%f\n", pPTP->traveledDistance);
       if (NULL != pPTP->next) {
         pPTP = pPTP->next;
       }
@@ -105,31 +109,25 @@ void fprintPFC(FILE *pFile, PFC *pPFC) {
 
 void addPoint(PTP *pPTP, GLL *pGLL) {
   if (pPTP->point == NULL) {
-      // TODO: non entra mai qui
     pPTP->point = pGLL;
     pPTP->traveledDistance = 0;
   } else {
     pPTP->next = (PTP *)malloc(sizeof(PTP));
-pPTP->next->point = pGLL;
-printf("test gll %f\n", pGLL->fLatitude);
-    printf("test ptp %f\n", pPTP->point->fLatitude);
+    pPTP->next->point = pGLL;
     pPTP->next->traveledDistance =
         computeDistance(pPTP->point, pPTP->next->point);
   }
 }
 
 float computeDistance(GLL *start, GLL *end) {
-  // https://stackoverflow.com/questions/365826/calculate-distance-between-2-gps-coordinates
-  // ricordarsi di operare in metri, in input si ha 4 cifre i metri sono a 2
-  // TODO: Now the big formula need to be apply
-  /* float dLatitude = degreesToRadians(start->fLatitude - end->fLatitude); */
-  /* float dLongitude = degreesToRadians(start->fLongitude - end->fLongitude);
-   */
-  float temp = degreesToRadians(30.2);
-  printf("%f \n", temp);
-  printf("%f \n", start->fLatitude);
-  printf("%f \n", start->fLongitude);
-  return 1;
+  float fDLatitude = degreesToRadiants(end->fLatitude - start->fLatitude);
+  float fDLongitude = degreesToRadiants(end->fLongitude - start->fLongitude);
+  float fSLatitude = degreesToRadiants(start->fLatitude);
+  float fELatitude = degreesToRadiants(end->fLatitude);
+  float fHa = pow(sin(fDLatitude / 2), 2) +
+              pow(sin(fDLongitude / 2), 2) * cos(fSLatitude) * cos(fELatitude);
+  float fHc = 2 * atan2(sqrt(fHa), sqrt(1 - fHa));
+  return EARTH_RADIUS_KM * fHc;
 }
 
 void printPTPs(PTP *pPTP) {
