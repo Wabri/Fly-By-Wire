@@ -31,6 +31,7 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
       extractGLL(pGLL, pRawElement);
       addPoint(pPTP, pGLL);
       printf("%f\n", pPTP->traveledDistance);
+      printf("%f\n", pPTP->istantSpeed);
       if (NULL != pPTP->next) {
         pPTP = pPTP->next;
       }
@@ -111,11 +112,14 @@ void addPoint(PTP *pPTP, GLL *pGLL) {
   if (pPTP->point == NULL) {
     pPTP->point = pGLL;
     pPTP->traveledDistance = 0;
+    pPTP->istantSpeed = 0;
   } else {
     pPTP->next = (PTP *)malloc(sizeof(PTP));
     pPTP->next->point = pGLL;
     pPTP->next->traveledDistance =
         computeDistance(pPTP->point, pPTP->next->point);
+    pPTP->next->istantSpeed =
+        pPTP->istantSpeed + pPTP->next->traveledDistance / CLOCK;
   }
 }
 

@@ -24,6 +24,7 @@ typedef struct rawElement {
 typedef struct pointToPoint {
   GLL *point;
   float traveledDistance;
+  float istantSpeed;
   struct pointToPoint *next;
 } PTP;
 
