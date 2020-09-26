@@ -1,2 +1,2 @@
 
-float degreesToRadians(float );
+float degreesToRadiants(float );
