@@ -1,7 +1,5 @@
 # Fly-by-wire
 
-[![time tracker](https://wakatime.com/badge/github/Wabri/Fly-By-Wire.svg)](https://wakatime.com/badge/github/Wabri/Fly-By-Wire)
-
 <small> **Progetto sistemi operativi 2019/2020 del corso di laurea in informatica Università degli studi di Firenze** </small>
 
 * [Analisi del problema](#analisi)
