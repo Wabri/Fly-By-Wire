@@ -8,41 +8,41 @@
 
 int main(int argc, char *argv[]) {
 
-  // creazione 3 processi
+    // creazione 3 processi
 
-  printf("Hallo\n");
+    printf("Hallo\n");
 
-  /* run("PFC1", G18_PATH, LOGS_PATH, PFC_1_SENTENCE); */
-  /* run("PFC2", G18_PATH, LOGS_PATH, PFC_2_SENTENCE); */
-  /* run("PFC3", G18_PATH, LOGS_PATH, PFC_3_SENTENCE); */
+    /* run("PFC1", G18_PATH, LOGS_PATH, PFC_1_SENTENCE); */
+    /* run("PFC2", G18_PATH, LOGS_PATH, PFC_2_SENTENCE); */
+    /* run("PFC3", G18_PATH, LOGS_PATH, PFC_3_SENTENCE); */
 
-  /* exit(EXIT_SUCCESS); */
+    /* exit(EXIT_SUCCESS); */
 
-  // PFC1
-  if (fork() == 0) {
-    run("PFC1", G18_PATH, LOGS_PATH, PFC_1_SENTENCE);
+    // PFC1
+    if (fork() == 0) {
+      run("PFC1", G18_PATH, LOGS_PATH, PFC_1_SENTENCE);
+      exit(EXIT_SUCCESS);
+    }
+
+    // PFC2
+    if (fork() == 0) {
+      run("PFC2", G18_PATH, LOGS_PATH, PFC_2_SENTENCE);
+      exit(EXIT_SUCCESS);
+    }
+
+    // PFC3
+    if (fork() == 0) {
+      run("PFC3", G18_PATH, LOGS_PATH, PFC_3_SENTENCE);
+      exit(EXIT_SUCCESS);
+    }
+
+    //
+    wait(NULL);
+    printf("Hallo1\n");
+    wait(NULL);
+    printf("Hallo2\n");
+    wait(NULL);
+    printf("Hallo3\n");
+
     exit(EXIT_SUCCESS);
-  }
-
-  // PFC2
-  if (fork() == 0) {
-    run("PFC2", G18_PATH, LOGS_PATH, PFC_2_SENTENCE);
-    exit(EXIT_SUCCESS);
-  }
-
-  // PFC3
-  if (fork() == 0) {
-    run("PFC3", G18_PATH, LOGS_PATH, PFC_3_SENTENCE);
-    exit(EXIT_SUCCESS);
-  }
-
-  //
-  wait(NULL);
-  printf("Hallo1\n");
-  wait(NULL);
-  printf("Hallo2\n");
-  wait(NULL);
-  printf("Hallo3\n");
-
-  exit(EXIT_SUCCESS);
 }

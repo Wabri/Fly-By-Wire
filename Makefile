@@ -1,4 +1,4 @@
-CC=clang
+CC=gcc
 
 PREFIX_GLOBAL=src/
 PREFIX_PFC=$(PREFIX_GLOBAL)/pfc/
