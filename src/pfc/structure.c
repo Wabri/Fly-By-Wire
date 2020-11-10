@@ -1,4 +1,3 @@
-
 #include "structure.h"
 #include "../constants.h"
 #include "../utility/angles.h"
@@ -16,14 +15,15 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
     PTP *pPTP = pPointToPoint;
     pFile = fopen(pPFC->filePath, "r");
     pLog = fopen(pPFC->fileLog, "w+");
-    
+
     if (pFile == NULL) {
         exit(EXIT_FAILURE);
     }
-    
+
     while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
         strExtrSeparator(sRecordHead, sLine, ",");
-        fprintf(pLog, "%d compare %s with  %s\n", getpid(), sElement, sRecordHead);
+        fprintf(pLog, "%d compare %s with  %s\n", getpid(), sElement, 
+                sRecordHead);
         if (strcmp(sRecordHead, sElement) == 0) {
             RawElement *pRawElement = (RawElement *)malloc(sizeof(RawElement));
             extractRawElements(pRawElement, sLine);
@@ -39,7 +39,7 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
         }
         // sleep(1);
     };
-    
+
     fclose(pFile);
     fclose(pLog);
 }
@@ -58,7 +58,7 @@ void extractRawElements(RawElement *pRawElement, char *sSource) {
     for (int i = 0; i < iElementCounter - 1; i++) {
         pRawElementIterator->element = malloc(sizeof(sSource));
         strExtrInterval(pRawElementIterator->element, sSource, iTemp[i] + 1,
-            iTemp[i + 1] - 1);
+                iTemp[i + 1] - 1);
         if (i < iElementCounter) {
             pRawElementIterator->next = (RawElement *)malloc(sizeof(RawElement));
             pRawElementIterator = pRawElementIterator->next;
@@ -92,14 +92,14 @@ void extractGLL(GLL *pGLL, RawElement *pRawElement) {
 
 void printGLL(GLL *pGLL) {
     printf("Latitude: %f, Meridian direction: %c, Longitude: %f, Parallel "
-    "direction: %c, Taken: %d, DataValid: %s",
-    pGLL->fLatitude, pGLL->cMeridianDirection, pGLL->fLongitude,
-    pGLL->cParallelDirection, pGLL->iFixTaken, pGLL->sDataValid);
+            "direction: %c, Taken: %d, DataValid: %s",
+            pGLL->fLatitude, pGLL->cMeridianDirection, pGLL->fLongitude,
+            pGLL->cParallelDirection, pGLL->iFixTaken, pGLL->sDataValid);
 }
 
 void printPFC(PFC *pPFC) {
     printf("Name: %s\n File Path: %s\n File Logs: %s\n", pPFC->name,
-    pPFC->filePath, pPFC->fileLog);
+            pPFC->filePath, pPFC->fileLog);
 }
 
 void fprintPFC(FILE *pFile, PFC *pPFC) {
@@ -117,9 +117,9 @@ void addPoint(PTP *pPTP, GLL *pGLL) {
         pPTP->next = (PTP *)malloc(sizeof(PTP));
         pPTP->next->point = pGLL;
         pPTP->next->traveledDistance =
-        computeDistance(pPTP->point, pPTP->next->point);
+            computeDistance(pPTP->point, pPTP->next->point);
         pPTP->next->istantSpeed =
-        pPTP->istantSpeed + pPTP->next->traveledDistance / CLOCK;
+            pPTP->istantSpeed + pPTP->next->traveledDistance / CLOCK;
     }
 }
 
@@ -129,7 +129,7 @@ float computeDistance(GLL *start, GLL *end) {
     float fSLatitude = degreesToRadiants(start->fLatitude);
     float fELatitude = degreesToRadiants(end->fLatitude);
     float fHa = pow(sin(fDLatitude / 2), 2) +
-    pow(sin(fDLongitude / 2), 2) * cos(fSLatitude) * cos(fELatitude);
+        pow(sin(fDLongitude / 2), 2) * cos(fSLatitude) * cos(fELatitude);
     float fHc = 2 * atan2(sqrt(fHa), sqrt(1 - fHa));
     return EARTH_RADIUS_KM * fHc;
 }
@@ -143,5 +143,5 @@ void printPTPs(PTP *pPTP) {
 
 void printPTP(PTP *pPTP) {
     printf("Start: %d, Traveld Distance: %f\n", pPTP->point->iFixTaken,
-    pPTP->traveledDistance);
+            pPTP->traveledDistance);
 }

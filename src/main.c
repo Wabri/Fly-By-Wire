@@ -20,20 +20,20 @@ int main(int argc, char *argv[]) {
 
     // PFC1
     if (fork() == 0) {
-      run("PFC1", G18_PATH, LOGS_PATH, PFC_1_SENTENCE);
-      exit(EXIT_SUCCESS);
+        run("PFC1", G18_PATH, LOGS_PATH, PFC_1_SENTENCE);
+        exit(EXIT_SUCCESS);
     }
 
     // PFC2
     if (fork() == 0) {
-      run("PFC2", G18_PATH, LOGS_PATH, PFC_2_SENTENCE);
-      exit(EXIT_SUCCESS);
+        run("PFC2", G18_PATH, LOGS_PATH, PFC_2_SENTENCE);
+        exit(EXIT_SUCCESS);
     }
 
     // PFC3
     if (fork() == 0) {
-      run("PFC3", G18_PATH, LOGS_PATH, PFC_3_SENTENCE);
-      exit(EXIT_SUCCESS);
+        run("PFC3", G18_PATH, LOGS_PATH, PFC_3_SENTENCE);
+        exit(EXIT_SUCCESS);
     }
 
     //
@@ -46,3 +46,4 @@ int main(int argc, char *argv[]) {
 
     exit(EXIT_SUCCESS);
 }
+

@@ -1,4 +1,3 @@
-
 #include "angles.h"
 #include <math.h>
 
