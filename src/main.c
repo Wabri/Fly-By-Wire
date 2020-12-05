@@ -2,6 +2,7 @@
 #include "pfc/pfc.h"
 #include "utility/connection.h"
 #include <signal.h>
+#include "transducer/transducer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,6 +61,12 @@ int main(int argc, char *argv[]) {
     //}
 
     //exit(EXIT_SUCCESS);
+    
+    // Transducer
+    if (fork() == 0) {
+        transducer();
+        exit(EXIT_SUCCESS);
+    }
 
     // PFC1
     if (fork() == 0) {
@@ -80,6 +87,7 @@ int main(int argc, char *argv[]) {
     }
 
     //
+    wait(NULL);
     wait(NULL);
     wait(NULL);
     wait(NULL);
