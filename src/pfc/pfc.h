@@ -1,1 +1,5 @@
-void run(char *name, char *filePath, char *logPath, char *sentence);
+#include "structure.h"
+
+void pfc(char *, char *, char *, char *);
+
+void importNMEA(PFC *, PTP *, char *);

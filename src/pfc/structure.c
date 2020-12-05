@@ -8,42 +8,6 @@
 #include <string.h>
 #include <unistd.h>
 
-void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
-    char sLine[255];
-    char sRecordHead[255];
-    FILE *pFile, *pLog;
-    PTP *pPTP = pPointToPoint;
-    pFile = fopen(pPFC->filePath, "r");
-    pLog = fopen(pPFC->fileLog, "w+");
-
-    if (pFile == NULL) {
-        exit(EXIT_FAILURE);
-    }
-
-    while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
-        strExtrSeparator(sRecordHead, sLine, ",");
-        fprintf(pLog, "%d compare %s with  %s\n", getpid(), sElement, 
-                sRecordHead);
-        if (strcmp(sRecordHead, sElement) == 0) {
-            RawElement *pRawElement = (RawElement *)malloc(sizeof(RawElement));
-            extractRawElements(pRawElement, sLine);
-            GLL *pGLL = (GLL *)malloc(sizeof(GLL));
-            extractGLL(pGLL, pRawElement);
-            addPoint(pPTP, pGLL);
-            printf("%f\n", pPTP->traveledDistance);
-            printf("%f\n", pPTP->istantSpeed);
-            if (NULL != pPTP->next) {
-                pPTP = pPTP->next;
-            }
-            fprintf(pLog, "%d catch: %s", getpid(), sLine);
-        }
-        // sleep(1);
-    };
-
-    fclose(pFile);
-    fclose(pLog);
-}
-
 void extractRawElements(RawElement *pRawElement, char *sSource) {
     int iTemp[strlen(sSource) + 1];
     int iElementCounter = 0;

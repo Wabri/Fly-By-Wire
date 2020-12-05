@@ -1,4 +1,4 @@
-CC=gcc
+CC=clang
 
 PREFIX_GLOBAL=src/
 PREFIX_PFC=$(PREFIX_GLOBAL)/pfc/
@@ -26,6 +26,7 @@ pfc: utility constants
 utility:
 	@ $(CC) -c $(PREFIX_UTIL)string.c -o $(BINDIR)string.o
 	@ $(CC) -c $(PREFIX_UTIL)angles.c -o $(BINDIR)angles.o
+	@ $(CC) -c $(PREFIX_UTIL)connection.c -o $(BINDIR)connection.o
 
 constants:
 	@ $(CC) -c $(PREFIX_GLOBAL)constants.c -o $(BINDIR)constants.o

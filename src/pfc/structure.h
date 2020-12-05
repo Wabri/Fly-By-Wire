@@ -27,8 +27,6 @@ typedef struct pointToPoint {
     struct pointToPoint *next;
 } PTP;
 
-void importNMEA(PFC *, PTP *, char *);
-
 void extractRawElements(RawElement *, char *);
 
 void extractGLL(GLL *, RawElement *);
