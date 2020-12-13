@@ -42,7 +42,7 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
     }
 
     // TODO: is it worth open connection here?
-    createSocketServer(pSM);
+    createSocketClient(pSM);
 
     while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
         strExtrSeparator(sRecordHead, sLine, ",");
