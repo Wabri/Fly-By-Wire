@@ -57,25 +57,26 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
 
             char *sInstantSpeed = malloc(sizeof(char[255]));
             sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
-            // TODO: send to transducer
-            while (1) {
-                pSM->fdClient = accept(pSM->fdServer, pSM->pCliAdd, &(pSM->cliLen));
-                if (fork() == 0) {
-                    write(pSM->fdClient, sInstantSpeed, strlen(sInstantSpeed));
-                    close(pSM->fdClient);
-                    exit(EXIT_SUCCESS);
-                } else {
-                    close(pSM->fdClient);
-                }
-            }
+            // TODO: rimane in attesa di un transducer
+            pSM->fdClient = accept(pSM->fdServer, pSM->pCliAdd, &(pSM->cliLen));
+            if (fork() == 0) {
+                write(pSM->fdClient, sInstantSpeed, strlen(sInstantSpeed) + 1);
+            }                 
+            close(pSM->fdClient);
 
             if (NULL != pPTP->next) {
                 pPTP = pPTP->next;
             }
             fprintf(pLog, "%d catch: %s", getpid(), sLine);
         }
-        // sleep(1);
     };
+
+    pSM->fdClient = accept(pSM->fdServer, pSM->pCliAdd, &(pSM->cliLen));
+    if (fork() == 0) {
+        char *stop = "stop";
+        write(pSM->fdClient, stop, strlen(stop) + 1);
+    }                 
+    close(pSM->fdClient);
 
     fclose(pFile);
     fclose(pLog);

@@ -40,5 +40,5 @@ void createSocketServer(sockMeta* pSM, char *sockName) {
     unlink(sockName);
 
     int bindResult = bind(pSM->fdServer, pSM->pSerAdd, pSM->serLen);
-    listen(pSM->fdServer, 4);
+    listen(pSM->fdServer, 1);
 }
