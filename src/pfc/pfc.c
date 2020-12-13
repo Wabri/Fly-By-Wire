@@ -1,6 +1,7 @@
 #include "pfc.h"
 #include "../utility/string.h"
 #include "../utility/connection.h"
+#include "../constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,7 +34,6 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
     char sRecordHead[255];
     FILE *pFile, *pLog;
     PTP *pPTP = pPointToPoint;
-    sockMeta sM, *pSM = &sM;
     pFile = fopen(pPFC->filePath, "r");
     pLog = fopen(pPFC->fileLog, "w+");
 
@@ -41,8 +41,8 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
         exit(EXIT_FAILURE);
     }
 
-    // TODO: is it worth open connection here?
-    createSocketClient(pSM);
+    sockMeta *pSM = malloc(sizeof(sockMeta));
+    createSocketServer(pSM, SOCK_TRANS_NAME);
 
     while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
         strExtrSeparator(sRecordHead, sLine, ",");
@@ -56,18 +56,18 @@ void importNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement) {
             addPoint(pPTP, pGLL);
 
             char *sInstantSpeed = malloc(sizeof(char[255]));
-            // TODO: verify sprintf
-            //sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
-            //while (1) {
-            //    pSM->fdClient = accept(pSM->fdServer, (struct sockaddr *) pSM->pSerAdd, &(pSM->iLength));
-            //    if (fork() == 0) {
-            //        write(pSM->fdClient,sInstantSpeed, strlen(sInstantSpeed) + 1);
-            //        close(pSM->fdClient);
-            //        exit(EXIT_SUCCESS);
-            //    } else {
-            //        close(pSM->fdClient);
-            //    }
-            //}
+            sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
+            // TODO: send to transducer
+            while (1) {
+                pSM->fdClient = accept(pSM->fdServer, pSM->pCliAdd, &(pSM->cliLen));
+                if (fork() == 0) {
+                    write(pSM->fdClient, sInstantSpeed, strlen(sInstantSpeed));
+                    close(pSM->fdClient);
+                    exit(EXIT_SUCCESS);
+                } else {
+                    close(pSM->fdClient);
+                }
+            }
 
             if (NULL != pPTP->next) {
                 pPTP = pPTP->next;

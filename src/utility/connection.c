@@ -1,43 +1,44 @@
 #include "connection.h"
 #include "../constants.h"
 #include <signal.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
 
-int createSocketClient(sockMeta* sM) {
-    sM->iLength = sizeof(struct sockaddr_un);
-    // TODO: verify length of sockaddr
-    sM->pSerAdd = (struct sockaddr *)malloc(sM->iLength);
-    sM->pCliAdd = (struct sockaddr *)malloc(sM->iLength);
-    sM->fdClient = socket(AF_UNIX, SOCK_STREAM, SOCK_PROTOCOL);
-    sM->pSerAdd->sun_family = AF_UNIX;
-    strcpy(sM->pSerAdd->sun_path, SOCK_TRANS_NAME);
-
-    // TODO: set up connection attempts
-    while(1){
-        if (connect(sM->fdClient, (struct sockaddr *) sM->pSerAdd, sM->iLength)) {
-            sleep(1);
-        } else {
-            break;}
-    }
-    return 0;
+void createSocketClient(sockMeta *pSM, char *sockName) {
+    struct sockaddr_un serAdd;
+    pSM->serAdd = serAdd;
+    pSM->pSerAdd = (struct sockaddr *)&pSM->serAdd;
+    pSM->serLen = sizeof(serAdd);
+    pSM->fdClient = socket(AF_UNIX, SOCK_STREAM, SOCK_PROTOCOL);
+    pSM->serAdd.sun_family = AF_UNIX;
+    strcpy(pSM->serAdd.sun_path, sockName);
 }
 
-void createSocketServer(sockMeta* sM) {
-    sM->iLength = sizeof(struct sockaddr_un);
-    // TODO: verify length of sockaddr (duplicate: see createSocketClient)
-    sM->pSerAdd = (struct sockaddr *)malloc(sM->iLength);
-    sM->pCliAdd = (struct sockaddr *)malloc(sM->iLength);
-    sM->fdClient = socket(AF_UNIX, SOCK_STREAM, SOCK_PROTOCOL);
-    sM->pSerAdd->sun_family = AF_UNIX;
-    strcpy(sM->pSerAdd->sun_path, SOCK_TRANS_NAME);
+void createSocketServer(sockMeta* pSM, char *sockName) {
+    struct sockaddr_un serAdd;
 
-    unlink(SOCK_TRANS_NAME);
-    // TODO: understand how to use resutl variable
-    int result = bind(sM->fdServer, (struct sockaddr *) sM->pSerAdd, sM->iLength);
-    listen(sM->fdServer, SOCK_MAX_CONN);
+    pSM->serAdd = serAdd;
+    pSM->pSerAdd = (struct sockaddr *) &pSM->serAdd;
+    pSM->serLen = sizeof(pSM->serAdd);
+
+    struct sockaddr_un cliAdd;
+    pSM->cliAdd = cliAdd;
+    pSM->pCliAdd = (struct sockaddr *) &pSM->cliAdd;
+    pSM->cliLen = sizeof(pSM->cliAdd);
+
     signal(SIGCHLD, SIG_IGN);
+
+    pSM->fdServer = socket(AF_UNIX, SOCK_STREAM, SOCK_PROTOCOL);
+
+    pSM->serAdd.sun_family = AF_UNIX;
+    strcpy(pSM->serAdd.sun_path, sockName);
+
+    unlink(sockName);
+
+    int bindResult = bind(pSM->fdServer, pSM->pSerAdd, pSM->serLen);
+    listen(pSM->fdServer, 4);
 }
