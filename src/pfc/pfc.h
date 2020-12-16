@@ -1,5 +1,12 @@
+#include "../utility/connection.h"
 #include "structure.h"
 
-void pfc(char *, char *, char *, char *);
+void pfc(char *, char *, char *, char *, unsigned int);
 
-void importNMEA(PFC *, PTP *, char *);
+void parseNMEA(PFC *, PTP *, char *, unsigned int);
+
+void startConnectSock(sockMeta *);
+
+void stopConnectSock(sockMeta *);
+
+void sendTransSock(sockMeta *, char *);

@@ -10,8 +10,13 @@
 #define PFC_3_SENTENCE PFC_DEFAULT_SENTENCE
 #define EARTH_RADIUS_M EARTH_RADIUS_KM*1000
 
-// Connection constants
+// Pfc Transducer connection Sockets
+#define PFC_TRANS_SOCKET 0
 #define SOCK_PROTOCOL 0
-// TODO: Is 10 a good value?
-#define SOCK_MAX_CONN 10
 #define SOCK_TRANS_NAME "Transducer"
+
+// Pfc Transducer connection Pipe
+#define PFC_TRANS_PIPE 1
+
+// Pfc Transducer connection file
+#define PFC_TRANS_FILE 2

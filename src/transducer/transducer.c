@@ -21,7 +21,6 @@ void transducer() {
     int result;
 
     // TODO: Manage infinite cycle and stop signal 
-
     result = -1;
     do {
         result = connect(pSM->fdClient, pSM->pSerAdd, pSM->serLen);
