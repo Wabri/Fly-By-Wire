@@ -1,4 +1,5 @@
 #include <sys/un.h>
+
 typedef struct socketMetadata {
 	struct sockaddr_un serAdd; // server address
 	struct sockaddr* pSerAdd; // pointer to server

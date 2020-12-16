@@ -40,10 +40,8 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
         exit(EXIT_FAILURE);
     }
 
-    sockMeta *pSM;
-    if (connectionType == PFC_TRANS_SOCKET) {
-        startConnectSock(pSM);
-    }
+    sockMeta *pSM = malloc(sizeof(sockMeta));
+    createSocketServer(pSM, SOCK_TRANS_NAME);
 
     while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
         strExtrSeparator(sRecordHead, sLine, ",");
@@ -58,11 +56,13 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
 
             char *sInstantSpeed = malloc(sizeof(char[255]));
             sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
-            // TODO: extract send element to transducer
             // TODO: rimane in attesa di un transducer
-            if (connectionType == PFC_TRANS_SOCKET) {
-                sendTransSock(pSM, sInstantSpeed);
-            }
+            pSM->fdClient = accept(pSM->fdServer, pSM->pCliAdd, &(pSM->cliLen));
+            if (fork() == 0) {
+                write(pSM->fdClient, sInstantSpeed, strlen(sInstantSpeed) + 1);
+            }                 
+            close(pSM->fdClient);
+            //sendTransSock(pSM, sInstantSpeed);
 
             if (NULL != pPTP->next) {
                 pPTP = pPTP->next;
@@ -72,6 +72,7 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
     };
 
     if (connectionType == PFC_TRANS_SOCKET) {
+        printf("%d\n",connectionType);
         stopConnectSock(pSM);
     }
 
