@@ -1,6 +1,7 @@
 #include <sys/un.h>
 
-typedef struct socketMetadata {
+typedef struct connectionMetadata {
+    unsigned int connectionType; // type of connection
 	struct sockaddr_un serAdd; // server address
 	struct sockaddr* pSerAdd; // pointer to server
 	struct sockaddr_un cliAdd; // client address
@@ -9,9 +10,9 @@ typedef struct socketMetadata {
 	unsigned int cliLen;
 	int fdClient; //fileDescriptorClient
 	int fdServer; //fileDescriptorServer
-} sockMeta;
+} conMeta;
 
-void createSocketClient(sockMeta *, char *);
+void createSocketClient(conMeta *, char *);
 
-void createSocketServer(sockMeta *, char *);
+void createSocketServer(conMeta *, char *);
 

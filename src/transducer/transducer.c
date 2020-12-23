@@ -12,8 +12,8 @@ int readLine(int , char*);
 void transducer() {
 
     // TODO: open server socket connection 
-    sockMeta *pSM = malloc(sizeof(sockMeta));
-    createSocketClient(pSM, SOCK_TRANS_NAME);
+    conMeta *pCM = malloc(sizeof(conMeta));
+    createSocketClient(pCM, SOCK_TRANS_NAME);
 
     printf("Transducer\n");
 
@@ -23,14 +23,14 @@ void transducer() {
     // TODO: Manage infinite cycle and stop signal 
     result = -1;
     do {
-        result = connect(pSM->fdClient, pSM->pSerAdd, pSM->serLen);
+        result = connect(pCM->fdClient, pCM->pSerAdd, pCM->serLen);
         if (result == -1) {
             sleep(1);
         }
     } while (result == -1);
 
-    readInstantSpeed(pSM->fdClient);
-    close(pSM->fdClient);
+    readInstantSpeed(pCM->fdClient);
+    close(pCM->fdClient);
 
     //connection with pfc1
     //create log for pfc1 called: speedPFC1.log

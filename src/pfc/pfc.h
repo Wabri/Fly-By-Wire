@@ -5,8 +5,9 @@ void pfc(char *, char *, char *, char *, unsigned int);
 
 void parseNMEA(PFC *, PTP *, char *, unsigned int);
 
-void startConnectSock(sockMeta *);
+void generateConnectionWithTrans(conMeta *);
 
-void stopConnectSock(sockMeta *);
+void sendDataToTrans(conMeta *, char *);
 
-void sendTransSock(sockMeta *, char *);
+void stopConnection(conMeta *);
+

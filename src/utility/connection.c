@@ -7,37 +7,37 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-void createSocketClient(sockMeta *pSM, char *sockName) {
+void createSocketClient(conMeta *pCM, char *sockName) {
     struct sockaddr_un serAdd;
-    pSM->serAdd = serAdd;
-    pSM->pSerAdd = (struct sockaddr *)&pSM->serAdd;
-    pSM->serLen = sizeof(serAdd);
-    pSM->fdClient = socket(AF_UNIX, SOCK_STREAM, SOCK_PROTOCOL);
-    pSM->serAdd.sun_family = AF_UNIX;
-    strcpy(pSM->serAdd.sun_path, sockName);
+    pCM->serAdd = serAdd;
+    pCM->pSerAdd = (struct sockaddr *)&pCM->serAdd;
+    pCM->serLen = sizeof(serAdd);
+    pCM->fdClient = socket(AF_UNIX, SOCK_STREAM, SOCK_PROTOCOL);
+    pCM->serAdd.sun_family = AF_UNIX;
+    strcpy(pCM->serAdd.sun_path, sockName);
 }
 
-void createSocketServer(sockMeta* pSM, char *sockName) {
+void createSocketServer(conMeta* pCM, char *sockName) {
     struct sockaddr_un serAdd;
 
-    pSM->serAdd = serAdd;
-    pSM->pSerAdd = (struct sockaddr *) &pSM->serAdd;
-    pSM->serLen = sizeof(pSM->serAdd);
+    pCM->serAdd = serAdd;
+    pCM->pSerAdd = (struct sockaddr *) &pCM->serAdd;
+    pCM->serLen = sizeof(pCM->serAdd);
 
     struct sockaddr_un cliAdd;
-    pSM->cliAdd = cliAdd;
-    pSM->pCliAdd = (struct sockaddr *) &pSM->cliAdd;
-    pSM->cliLen = sizeof(pSM->cliAdd);
+    pCM->cliAdd = cliAdd;
+    pCM->pCliAdd = (struct sockaddr *) &pCM->cliAdd;
+    pCM->cliLen = sizeof(pCM->cliAdd);
 
     signal(SIGCHLD, SIG_IGN);
 
-    pSM->fdServer = socket(AF_UNIX, SOCK_STREAM, SOCK_PROTOCOL);
+    pCM->fdServer = socket(AF_UNIX, SOCK_STREAM, SOCK_PROTOCOL);
 
-    pSM->serAdd.sun_family = AF_UNIX;
-    strcpy(pSM->serAdd.sun_path, sockName);
+    pCM->serAdd.sun_family = AF_UNIX;
+    strcpy(pCM->serAdd.sun_path, sockName);
 
     unlink(sockName);
 
-    int bindResult = bind(pSM->fdServer, pSM->pSerAdd, pSM->serLen);
-    listen(pSM->fdServer, 1);
+    int bindResult = bind(pCM->fdServer, pCM->pSerAdd, pCM->serLen);
+    listen(pCM->fdServer, 1);
 }
