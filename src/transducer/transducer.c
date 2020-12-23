@@ -6,31 +6,32 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-void readInstantSpeed(int );
-int readLine(int , char*);
-
 void transducer() {
 
     // TODO: open server socket connection 
-    conMeta *pCM = malloc(sizeof(conMeta));
-    createSocketClient(pCM, SOCK_TRANS_NAME);
-
-    printf("Transducer\n");
-
-
-    int result;
+    conMeta *pCM1 = malloc(sizeof(conMeta));
+    createSocketClient(pCM1, SOCK_TRANS_NAME);
+    conMeta *pCM2 = malloc(sizeof(conMeta));
+    createPipeClient(pCM2, PIPE_TRANS_NAME);
 
     // TODO: Manage infinite cycle and stop signal 
-    result = -1;
+    // PFC1 Socket
+    int result = -1;
     do {
-        result = connect(pCM->fdClient, pCM->pSerAdd, pCM->serLen);
+        result = connect(pCM1->fdClient, pCM1->pSerAdd, pCM1->serLen);
         if (result == -1) {
             sleep(1);
         }
     } while (result == -1);
 
-    readInstantSpeed(pCM->fdClient);
-    close(pCM->fdClient);
+    readInstantSpeed(pCM1->fdClient, SOCK_TRANS_NAME);
+    close(pCM1->fdClient);
+
+    // TODO: Manage infinite cycle and stop signal 
+    // PFC2 Pipe
+    readInstantSpeed(pCM2->fdClient, PIPE_TRANS_NAME);
+    close(pCM2->fdClient);
+    unlink(PIPE_TRANS_NAME);
 
     //connection with pfc1
     //create log for pfc1 called: speedPFC1.log
@@ -43,11 +44,10 @@ void transducer() {
 
 }
 
-void readInstantSpeed(int fd) {
-
+void readInstantSpeed(int fd, char *test) {
     char str[200];
     while (readLine(fd, str)) {
-        printf("T:%s\n", str);
+        printf("T%s:%s\n",test, str);
     }
 }
 

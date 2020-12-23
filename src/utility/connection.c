@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 void createSocketClient(conMeta *pCM, char *sockName) {
     struct sockaddr_un serAdd;
@@ -41,3 +43,20 @@ void createSocketServer(conMeta* pCM, char *sockName) {
     int bindResult = bind(pCM->fdServer, pCM->pSerAdd, pCM->serLen);
     listen(pCM->fdServer, 1);
 }
+
+void createPipeClient(conMeta *pCM, char *pipeName) {
+    unlink(pipeName);
+    mknod(pipeName, S_IFIFO, 0);
+    chmod(pipeName, 0660);
+    pCM->fdClient = open(pipeName,O_RDONLY);
+}
+
+void createPipeServer(conMeta *pCM, char *pipeName) {
+    do {
+        pCM->fdServer = open(pipeName, O_WRONLY);
+        if (pCM->fdServer == -1) {
+            sleep(1);
+        }
+    } while (pCM->fdServer == -1);
+}
+

@@ -13,10 +13,11 @@
 // Pfc Transducer connection Sockets
 #define PFC_TRANS_SOCKET 0
 #define SOCK_PROTOCOL 0
-#define SOCK_TRANS_NAME "Transducer"
+#define SOCK_TRANS_NAME "TransducerSocket"
 
 // Pfc Transducer connection Pipe
 #define PFC_TRANS_PIPE 1
+#define PIPE_TRANS_NAME "TransducerPipe"
 
 // Pfc Transducer connection file
 #define PFC_TRANS_FILE 2

@@ -88,6 +88,7 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
     free(pFile);
     free(pLog);
     free(pPTP);
+    free(pCM);
 }
 
 void generateConnectionWithTrans(conMeta *pCM) {
@@ -97,7 +98,7 @@ void generateConnectionWithTrans(conMeta *pCM) {
             break;
         case PFC_TRANS_PIPE:
             // TODO: Create pipe name
-            printf("Create Pipe\n");
+            createPipeServer(pCM, PIPE_TRANS_NAME);
             break;
         case PFC_TRANS_FILE:
             // TODO: Create file
@@ -118,7 +119,8 @@ void sendDataToTrans(conMeta *pCM, char *data) {
             break;
         case PFC_TRANS_PIPE:
             // TODO: Create pipe name
-            printf("Send speed through pipe\n");
+            write(pCM->fdServer, data, strlen(data) + 1);
+            sleep(3);
             break;
         case PFC_TRANS_FILE:
             // TODO: Create file
@@ -133,7 +135,7 @@ void stopConnection(conMeta *pCM) {
         case PFC_TRANS_SOCKET:
             break;
         case PFC_TRANS_PIPE:
-            printf("Send speed through pipe\n");
+            close(pCM->fdServer);
             break;
         case PFC_TRANS_FILE:
             printf("Send speed through file\n");

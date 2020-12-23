@@ -16,3 +16,7 @@ void createSocketClient(conMeta *, char *);
 
 void createSocketServer(conMeta *, char *);
 
+void createPipeClient(conMeta *, char *);
+
+void createPipeServer(conMeta *, char *);
+
