@@ -1,118 +1,40 @@
-prefix_modules=src/tests/modules/
-prefix_strings=src/tests/strings/
-prefix_errors=src/tests/errors/
-prefix_process=src/tests/process/
-prefix_signals=src/tests/signals/
-prefix_comm=src/tests/communication/
-prefix_sockcc=src/tests/sockets_cc/
-prefix_sockes=src/tests/sockets_es/
-bindir=bin/
+CC=clang
 
-all: run_mod
+PREFIX_GLOBAL=src/
+PREFIX_PFC=$(PREFIX_GLOBAL)/pfc/
+PREFIX_TRANS=$(PREFIX_GLOBAL)/transducer/
+PREFIX_UTIL=$(PREFIX_GLOBAL)/utility/
+BINDIR=bin/
+LOGDIR=logs/
+
+run: all
+	./run
+
+all: clean install 
 
 clean:
-	@ rm -r *.o run ciao.txt bin/
+	@ rm -rf $(BINDIR) $(LOGDIR)
+	@ mkdir $(BINDIR)
+	@ mkdir $(LOGDIR)
 
-# Modules
-run_mod: install
-	@ ./$(bindir)run
-install: clean_mod rev pal mod 
-	@ clang mod.o pal.o rev.o -o run
-	@ mv run $(bindir)/
-mod: pal 
-	@ echo "Start compile mod"
-	@ clang -c $(prefix_modules)mod.c
-	@ echo "Done compile mod"
-pal: rev
-	@ echo "Start compile pal"
-	@ clang -c $(prefix_modules)pal.c
-	@ echo "Done compile pal"
-rev:
-	@ echo "Start compile rev"
-	@ clang -c $(prefix_modules)rev.c
-	@ echo "Done compile rev"
-clean_mod:
-	@ echo "Cleaning the garbage"
-	@ rm -f mod.o pal.o rev.o $(bindir)run
+install: main
+	@ $(CC) $(BINDIR)*.o -o run -lm
 
-# Strings
-run_str: compile_strings
-	@ ./run
-compile_strings: strings
-	@ clang strings.o -o run
-strings:
-	@ clang -c $(prefix_strings)strings.c
-clean_strings:
-	@ rm strings.o run
+main: transducer pfc constants
+	@ $(CC) -c $(PREFIX_GLOBAL)main.c -o $(BINDIR)main.o
 
-errors:
-	@ clang -c $(prefix_errors)error.c
-	@ clang error.o -o run
-	@ ./run
+pfc: utility constants
+	@ $(CC) -c $(PREFIX_PFC)pfc.c -o $(BINDIR)pfc.o
+	@ $(CC) -c $(PREFIX_PFC)structure.c -o $(BINDIR)structure.o
 
-process:
-	@ clang -c $(prefix_process)process.c
-	@ clang process.o -o run
-	@ ./run
+transducer: 
+	@ $(CC) -c $(PREFIX_TRANS)transducer.c -o $(BINDIR)transducer.o
 
-summers:
-	@ clang -c $(prefix_process)summers.c
-	@ clang summers.o -o run
-	@ ./run 
+utility:
+	@ $(CC) -c $(PREFIX_UTIL)string.c -o $(BINDIR)string.o
+	@ $(CC) -c $(PREFIX_UTIL)angles.c -o $(BINDIR)angles.o
+	@ $(CC) -c $(PREFIX_UTIL)connection.c -o $(BINDIR)connection.o
 
-file_writer:
-	@ clang -c $(prefix_process)file_writer.c
-	@ clang file_writer.o -o run
-	@ ./run ciao.txt
+constants:
+	@ $(CC) -c $(PREFIX_GLOBAL)constants.c -o $(BINDIR)constants.o
 
-signals:
-	@ clang -c $(prefix_signals)signals.c
-	@ clang signals.o -o run
-	@ ./run
-
-toggle:
-	@ clang -c $(prefix_signals)toggle.c
-	@ clang toggle.o -o run
-	@ ./run
-
-pipe:
-	@ clang -c $(prefix_comm)pipe.c
-	@ clang pipe.o -o run
-	@ ./run
-
-rd_wr: read write
-	@ ./reader & ./writer & ./writer
-
-read:
-	@ clang -c $(prefix_comm)reader.c
-	@ clang reader.o -o reader
-
-write:
-	@ clang -c $(prefix_comm)writer.c
-	@ clang writer.o -o writer
-
-ch_ck: chef cook
-	@ ./chef &
-	@ ./cook 
-	@ ./cook 
-	@ ./cook 
-	@ ./cook 
-
-cook:
-	@ clang -c $(prefix_sockcc)cook.c
-	@ clang cook.o -o cook
-
-chef:
-	@ clang -c $(prefix_sockcc)chef.c
-	@ clang chef.o -o chef
-
-echo_c_s: eserver eclient
-
-
-eserver:
-	@ clang -c $(prefix_sockes)echoserver.c
-	@ clang echoserver.o -o server
-
-eclient:
-	@ clang -c $(prefix_sockes)echoclient.c
-	@ clang echoclient.o -o client
