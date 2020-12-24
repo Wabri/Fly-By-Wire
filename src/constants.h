@@ -21,3 +21,4 @@
 
 // Pfc Transducer connection file
 #define PFC_TRANS_FILE 2
+#define FILE_TRANS_NAME "TransducerFile"

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <sys/un.h>
 
 typedef struct connectionMetadata {
@@ -10,6 +11,7 @@ typedef struct connectionMetadata {
 	unsigned int cliLen;
 	int fdClient; //fileDescriptorClient
 	int fdServer; //fileDescriptorServer
+    FILE *pFile;
 } conMeta;
 
 void createSocketClient(conMeta *, char *);

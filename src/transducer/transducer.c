@@ -8,14 +8,10 @@
 
 void transducer() {
 
-    // TODO: open server socket connection 
-    conMeta *pCM1 = malloc(sizeof(conMeta));
-    createSocketClient(pCM1, SOCK_TRANS_NAME);
-    conMeta *pCM2 = malloc(sizeof(conMeta));
-    createPipeClient(pCM2, PIPE_TRANS_NAME);
-
     // TODO: Manage infinite cycle and stop signal 
     // PFC1 Socket
+    conMeta *pCM1 = malloc(sizeof(conMeta));
+    createSocketClient(pCM1, SOCK_TRANS_NAME);
     int result = -1;
     do {
         result = connect(pCM1->fdClient, pCM1->pSerAdd, pCM1->serLen);
@@ -29,9 +25,20 @@ void transducer() {
 
     // TODO: Manage infinite cycle and stop signal 
     // PFC2 Pipe
+    conMeta *pCM2 = malloc(sizeof(conMeta));
+    createPipeClient(pCM2, PIPE_TRANS_NAME);
     readInstantSpeed(pCM2->fdClient, PIPE_TRANS_NAME);
     close(pCM2->fdClient);
     unlink(PIPE_TRANS_NAME);
+
+    // TODO: Manage infinite cycle and stop signal 
+    // PFC3 FILE
+    conMeta *pCM3 = malloc(sizeof(conMeta));
+    pCM3->pFile = fopen(FILE_TRANS_NAME, "r");
+    char str[255];
+    int i = fread(str, 1, 15, pCM3->pFile);
+    printf("TFile:%s\n", str);
+    fclose(pCM3->pFile);
 
     //connection with pfc1
     //create log for pfc1 called: speedPFC1.log

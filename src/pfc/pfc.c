@@ -102,7 +102,7 @@ void generateConnectionWithTrans(conMeta *pCM) {
             break;
         case PFC_TRANS_FILE:
             // TODO: Create file
-            printf("Create file\n");
+            pCM->pFile = fopen(FILE_TRANS_NAME, "w+");
             break;
     }
 }
@@ -110,7 +110,6 @@ void generateConnectionWithTrans(conMeta *pCM) {
 void sendDataToTrans(conMeta *pCM, char *data) {
     switch (pCM->connectionType) {
         case PFC_TRANS_SOCKET:
-            // TODO: rimane in attesa di un transducer
             pCM->fdClient = accept(pCM->fdServer, pCM->pCliAdd, &(pCM->cliLen));
             if (fork() == 0) {
                 write(pCM->fdClient, data, strlen(data) + 1);
@@ -118,13 +117,12 @@ void sendDataToTrans(conMeta *pCM, char *data) {
             close(pCM->fdClient);
             break;
         case PFC_TRANS_PIPE:
-            // TODO: Create pipe name
             write(pCM->fdServer, data, strlen(data) + 1);
             sleep(3);
             break;
         case PFC_TRANS_FILE:
-            // TODO: Create file
-            printf("Send speed through file\n");
+            fwrite(data, 1, 255, pCM->pFile);
+            sleep(3);
             break;
     }
 }
@@ -138,7 +136,7 @@ void stopConnection(conMeta *pCM) {
             close(pCM->fdServer);
             break;
         case PFC_TRANS_FILE:
-            printf("Send speed through file\n");
+            fclose(pCM->pFile);
             break;
     }
     free(pCM);
