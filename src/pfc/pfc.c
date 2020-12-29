@@ -64,8 +64,6 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
             char *sInstantSpeed = malloc(sizeof(char[255]));
             sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
             sendDataToTrans(pCM, sInstantSpeed);
-            printf("YOLO:%s %d\n", sInstantSpeed, pCM->connectionType);
-            free(sInstantSpeed);
 
             if (NULL != pPTP->next) {
                 pPTP = pPTP->next;
@@ -96,7 +94,6 @@ void generateConnectionWithTrans(conMeta *pCM) {
             createPipeServer(pCM, PIPE_TRANS_NAME);
             break;
         case PFC_TRANS_FILE:
-            pCM->pFile = fopen(FILE_TRANS_NAME, "w+");
             break;
     }
 }
@@ -104,24 +101,27 @@ void generateConnectionWithTrans(conMeta *pCM) {
 void sendDataToTrans(conMeta *pCM, char *data) {
     switch (pCM->connectionType) {
         case PFC_TRANS_SOCKET:
-            if (fork() == 0) {
-                write(pCM->fdClient, data, strlen(data) + 1);
-                exit(EXIT_SUCCESS);
-            }
+            write(pCM->fdClient, data, strlen(data) + 1);
             wait(NULL);
-            sleep(1);
+            sleep(CLOCK);
             break;
         case PFC_TRANS_PIPE:
-            if (fork() == 0) {
-                write(pCM->fdServer, data, strlen(data) + 1);
-                exit(EXIT_SUCCESS);
-            }
+            write(pCM->fdServer, data, strlen(data) + 1);
             wait(NULL);
-            sleep(1);
+            sleep(CLOCK);
             break;
         case PFC_TRANS_FILE:
-            fwrite(data, 1, 255, pCM->pFile);
-            sleep(1);
+            do {
+                pCM->pFile = fopen(FILE_TRANS_NAME, "w+");
+                if (pCM->pFile != NULL) {
+                    break;
+                }
+                sleep(CLOCK);
+            } while (1);
+            strcat(data, "|");
+            fputs(data, pCM->pFile);
+            fclose(pCM->pFile);
+            sleep(CLOCK);
             break;
     }
 }

@@ -3,6 +3,7 @@
 #include "../utility/connection.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -18,13 +19,13 @@ void transducer() {
         do {
             result = connect(pCM1->fdClient, pCM1->pSerAdd, pCM1->serLen);
             if (result == -1) {
-                sleep(1);
+                sleep(CLOCK);
             }
         } while (result == -1);
 
         while (1) {
             readInstantSpeed(pCM1->fdClient, SOCK_TRANS_NAME);
-            sleep(1);
+            sleep(CLOCK);
         }
 
         close(pCM1->fdClient);
@@ -38,7 +39,7 @@ void transducer() {
         createPipeClient(pCM2, PIPE_TRANS_NAME);
         while (1) {
             readInstantSpeed(pCM2->fdClient, PIPE_TRANS_NAME);
-            sleep(1);
+            sleep(CLOCK);
         }
         close(pCM2->fdClient);
         unlink(PIPE_TRANS_NAME);
@@ -49,12 +50,20 @@ void transducer() {
     // PFC3 FILE
     if (fork() == 0) {
         conMeta *pCM3 = malloc(sizeof(conMeta));
-        pCM3->pFile = fopen(FILE_TRANS_NAME, "r");
         while (1) {
             char str[255];
-            int i = fread(str, 1, 255, pCM3->pFile);
+            do{
+                pCM3->pFile = fopen(FILE_TRANS_NAME, "r");
+                if (pCM3->pFile != NULL) {
+                    break;
+                }
+                printf("File do not exists\n");
+                sleep(CLOCK);
+            } while (1);
+            fgets(str, 255, pCM3->pFile);
             printf("T%s:%s\n", FILE_TRANS_NAME, str);
-            sleep(1);
+            fclose(pCM3->pFile);
+            sleep(CLOCK);
         }
         fclose(pCM3->pFile);
         free(pCM3);
