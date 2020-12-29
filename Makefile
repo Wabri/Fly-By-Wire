@@ -1,4 +1,4 @@
-CC=clang
+CC=gcc
 
 PREFIX_GLOBAL=src/
 PREFIX_PFC=$(PREFIX_GLOBAL)/pfc/
@@ -27,7 +27,7 @@ pfc: utility constants
 	@ $(CC) -c $(PREFIX_PFC)pfc.c -o $(BINDIR)pfc.o
 	@ $(CC) -c $(PREFIX_PFC)structure.c -o $(BINDIR)structure.o
 
-transducer: 
+transducer: utility constants
 	@ $(CC) -c $(PREFIX_TRANS)transducer.c -o $(BINDIR)transducer.o
 
 utility:

@@ -24,7 +24,7 @@ void transducer() {
         } while (result == -1);
 
         while (1) {
-            readInstantSpeed(pCM1->fdClient, SOCK_TRANS_NAME);
+            readInstantSpeed(pCM1->fdClient);
             sleep(CLOCK);
         }
 
@@ -38,7 +38,7 @@ void transducer() {
         conMeta *pCM2 = malloc(sizeof(conMeta));
         createPipeClient(pCM2, PIPE_TRANS_NAME);
         while (1) {
-            readInstantSpeed(pCM2->fdClient, PIPE_TRANS_NAME);
+            readInstantSpeed(pCM2->fdClient);
             sleep(CLOCK);
         }
         close(pCM2->fdClient);
@@ -57,11 +57,10 @@ void transducer() {
                 if (pCM3->pFile != NULL) {
                     break;
                 }
-                printf("File do not exists\n");
                 sleep(CLOCK);
             } while (1);
             fgets(str, 255, pCM3->pFile);
-            printf("T%s:%s\n", FILE_TRANS_NAME, str);
+            printf("T:%s\n", str);
             fclose(pCM3->pFile);
             sleep(CLOCK);
         }
@@ -83,10 +82,10 @@ void transducer() {
     wait(NULL);
 }
 
-void readInstantSpeed(int fd, char *test) {
+void readInstantSpeed(int fd) {
     char str[200];
     while (readLine(fd, str)) {
-        printf("T%s:%s\n",test, str);
+        printf("T:%s\n", str);
     }
 }
 

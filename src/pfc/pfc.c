@@ -16,11 +16,9 @@ void pfc(char *name, char *filePath, char *logPath, char *sentence, unsigned int
 
     char *logPathName = malloc(1 + strlen(logPath) + strlen("log_") +
             strlen(ppfc->name) + strlen(".txt"));
-    logPathName[0] = '\0';
-
+    
     // TODO: move logs on transducer 
-    strcat(logPathName, logPath);
-    strcat(logPathName, "log_");
+    strcpy(logPathName, logPath);
     strcat(logPathName, ppfc->name);
     strcat(logPathName, ".txt");
 
@@ -38,8 +36,6 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
     pLog = fopen(pPFC->fileLog, "w+");
 
     if (pFile == NULL) {
-        free(sLine);
-        free(sRecordHead);
         free(pFile);
         free(pLog);
         free(pPTP);
@@ -76,8 +72,6 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
 
     fclose(pFile);
     fclose(pLog);
-    free(sLine);
-    free(sRecordHead);
     free(pFile);
     free(pLog);
     free(pPTP);
@@ -118,7 +112,6 @@ void sendDataToTrans(conMeta *pCM, char *data) {
                 }
                 sleep(CLOCK);
             } while (1);
-            strcat(data, "|");
             fputs(data, pCM->pFile);
             fclose(pCM->pFile);
             sleep(CLOCK);

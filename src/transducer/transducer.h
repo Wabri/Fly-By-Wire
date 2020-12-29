@@ -1,5 +1,5 @@
 void transducer();
 
-void readInstantSpeed(int, char *);
+void readInstantSpeed(int);
 
 int readLine(int,  char *);
