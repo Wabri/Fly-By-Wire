@@ -59,7 +59,8 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
 
             char *sInstantSpeed = malloc(sizeof(char[255]));
             sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
-            sendDataToTrans(pCM, sInstantSpeed);
+            //sendDataToTrans(pCM, sInstantSpeed);
+            sendDataToTrans(pCM, "#stop");
 
             if (NULL != pPTP->next) {
                 pPTP = pPTP->next;

@@ -24,7 +24,12 @@ void transducer() {
         } while (result == -1);
 
         while (1) {
-            readInstantSpeed(pCM1->fdClient);
+            printf("SOCKET");
+            char *str = readInstantSpeed(pCM1->fdClient);
+            // TODO: why str not equal to stop signal
+            if (strcmp(str, SOCK_STOP_SIGNAL)) {
+                break;
+            }
             sleep(CLOCK);
         }
 
@@ -38,7 +43,12 @@ void transducer() {
         conMeta *pCM2 = malloc(sizeof(conMeta));
         createPipeClient(pCM2, PIPE_TRANS_NAME);
         while (1) {
-            readInstantSpeed(pCM2->fdClient);
+            printf("PIPE");
+            char *str = readInstantSpeed(pCM2->fdClient);
+            // TODO: why str not equal to stop signal
+            if (strcmp(str, SOCK_STOP_SIGNAL)) {
+                break;
+            }
             sleep(CLOCK);
         }
         close(pCM2->fdClient);
@@ -60,8 +70,12 @@ void transducer() {
                 sleep(CLOCK);
             } while (1);
             fgets(str, 255, pCM3->pFile);
-            printf("T:%s\n", str);
+            printf("fT:%s\n", str);
             fclose(pCM3->pFile);
+            // TODO: why str not equal to stop signal
+            if (strcmp(str, SOCK_STOP_SIGNAL)) {
+                break;
+            }
             sleep(CLOCK);
         }
         fclose(pCM3->pFile);
@@ -82,11 +96,12 @@ void transducer() {
     wait(NULL);
 }
 
-void readInstantSpeed(int fd) {
-    char str[200];
+char *readInstantSpeed(int fd) {
+    char *str = malloc(sizeof(char[255]));
     while (readLine(fd, str)) {
-        printf("T:%s\n", str);
+        printf("Trans:%s\n", str);
     }
+    return str;
 }
 
 int readLine(int fd, char *str) {
