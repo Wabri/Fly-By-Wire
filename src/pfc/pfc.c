@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 void pfc(char *name, char *filePath, char *logPath, char *sentence, unsigned int connectionType) {
@@ -63,14 +64,8 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
             char *sInstantSpeed = malloc(sizeof(char[255]));
             sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
             sendDataToTrans(pCM, sInstantSpeed);
-
-            // ***** TEMP start *****
-            if (connectionType == PFC_TRANS_PIPE) {
-                return;
-            } else if (connectionType == PFC_TRANS_FILE) {
-                return; 
-            }
-            // ***** TEMP end *****
+            printf("YOLO:%s %d\n", sInstantSpeed, pCM->connectionType);
+            free(sInstantSpeed);
 
             if (NULL != pPTP->next) {
                 pPTP = pPTP->next;
@@ -95,13 +90,12 @@ void generateConnectionWithTrans(conMeta *pCM) {
     switch (pCM->connectionType) {
         case PFC_TRANS_SOCKET:
             createSocketServer(pCM, SOCK_TRANS_NAME);
+            pCM->fdClient = accept(pCM->fdServer, pCM->pCliAdd, &(pCM->cliLen));
             break;
         case PFC_TRANS_PIPE:
-            // TODO: Create pipe name
             createPipeServer(pCM, PIPE_TRANS_NAME);
             break;
         case PFC_TRANS_FILE:
-            // TODO: Create file
             pCM->pFile = fopen(FILE_TRANS_NAME, "w+");
             break;
     }
@@ -110,19 +104,24 @@ void generateConnectionWithTrans(conMeta *pCM) {
 void sendDataToTrans(conMeta *pCM, char *data) {
     switch (pCM->connectionType) {
         case PFC_TRANS_SOCKET:
-            pCM->fdClient = accept(pCM->fdServer, pCM->pCliAdd, &(pCM->cliLen));
             if (fork() == 0) {
                 write(pCM->fdClient, data, strlen(data) + 1);
-            }                 
-            close(pCM->fdClient);
+                exit(EXIT_SUCCESS);
+            }
+            wait(NULL);
+            sleep(1);
             break;
         case PFC_TRANS_PIPE:
-            write(pCM->fdServer, data, strlen(data) + 1);
-            sleep(3);
+            if (fork() == 0) {
+                write(pCM->fdServer, data, strlen(data) + 1);
+                exit(EXIT_SUCCESS);
+            }
+            wait(NULL);
+            sleep(1);
             break;
         case PFC_TRANS_FILE:
             fwrite(data, 1, 255, pCM->pFile);
-            sleep(3);
+            sleep(1);
             break;
     }
 }
