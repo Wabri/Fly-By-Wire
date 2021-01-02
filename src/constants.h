@@ -11,6 +11,14 @@
 #define PFC_LOGS_PATH LOGS_PATH
 #define PFC_DEFAULT_SENTENCE "$GPGLL"
 #define STOP_SIGNAL "#stop"
+#define DEFAULT_BIAS 0
+
+// FMAN
+#define FMAN_LOGS_PATH LOGS_PATH
+#define FMAN_PROB_STOP .01
+#define FMAN_PROB_INT .0001
+#define FMAN_PROB_CONT .1
+#define FMAN_PROB_USER .1
 
 // Transducer
 #define TRANS_LOGS_PATH LOGS_PATH

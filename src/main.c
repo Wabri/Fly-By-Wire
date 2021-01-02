@@ -24,7 +24,6 @@ int main(int argc, char *argv[]) {
     // PFC1
     pidPFCs[0] = fork();
     if (pidPFCs[0] == 0) {
-        printf("pfc1: %d\n",getpid());
         pfc("PFC1", G18_PATH, PFC_LOGS_PATH, PFC_1_SENTENCE, PFC_TRANS_SOCKET);
         exit(EXIT_SUCCESS);
     }
@@ -32,7 +31,6 @@ int main(int argc, char *argv[]) {
     // PFC2
     pidPFCs[1] = fork();
     if (pidPFCs[1] == 0) {
-        printf("pfc2: %d\n",getpid());
         pfc("PFC2", G18_PATH, PFC_LOGS_PATH, PFC_2_SENTENCE, PFC_TRANS_PIPE);
         exit(EXIT_SUCCESS);
     }
@@ -40,14 +38,14 @@ int main(int argc, char *argv[]) {
     // PFC3
     pidPFCs[2] = fork();
     if (pidPFCs[2] == 0) {
-        printf("pfc3: %d\n",getpid());
         pfc("PFC3", G18_PATH, PFC_LOGS_PATH, PFC_3_SENTENCE, PFC_TRANS_FILE);
         exit(EXIT_SUCCESS);
     }
     
     // FMAN
     if (fork() == 0) {
-        fman(pidPFCs);
+        fman(pidPFCs, FMAN_LOGS_PATH);
+        exit(EXIT_SUCCESS);
     }
 
     wait(NULL);

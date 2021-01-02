@@ -2,6 +2,8 @@
 #include "../fman/fman.h"
 #include "../utility/string.h"
 #include "../constants.h"
+#include <math.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,15 +11,26 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+int BIAS = DEFAULT_BIAS;
+
+void signalUserHandler(int signum)
+{
+    if (signum == SIGUSR1) {
+        BIAS = 1;
+    }
+}
+
 void pfc(char *name, char *filePath, char *logPath, char *sentence, unsigned int connectionType) {
     PFC pfc, *ppfc = &pfc;
     PTP ptp, *pptp = &ptp;
     ppfc->name = name;
     ppfc->filePath = filePath;
 
+    signal(SIGUSR1, signalUserHandler);
+
     char *logPathName = malloc(1 + strlen(logPath) +
             strlen(ppfc->name) + strlen(".log"));
-    
+
     strcpy(logPathName, logPath);
     strcat(logPathName, ppfc->name);
     strcat(logPathName, ".log");
@@ -39,6 +52,8 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
         exit(EXIT_FAILURE);
     }
 
+    fprintf(pLog, "PFC %d\n", getpid());
+
     conMeta *pCM = malloc(sizeof(conMeta));
     pCM->connectionType = connectionType;
     fprintf(pLog, "Open server connection\n");
@@ -49,11 +64,18 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
         fprintf(pLog, "Compare %s with  %s\n", sElement, sRecordHead);
         if (strcmp(sRecordHead, sElement) == 0) {
             fprintf(pLog, "\tCatch: %s\n", sLine);
+
             RawElement *pRawElement = (RawElement *)malloc(sizeof(RawElement));
             extractRawElements(pRawElement, sLine);
+
             GLL *pGLL = (GLL *)malloc(sizeof(GLL));
             extractGLL(pGLL, pRawElement);
             addPoint(pPTP, pGLL);
+
+            if (BIAS) {
+                pPTP->istantSpeed = (float)((int)round(pPTP->istantSpeed) << 2);
+                BIAS = DEFAULT_BIAS;
+            }
 
             char *sInstantSpeed = malloc(sizeof(char[255]));
             sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
@@ -95,12 +117,10 @@ void sendDataToTrans(conMeta *pCM, char *data) {
         case PFC_TRANS_SOCKET:
             write(pCM->fdClient, data, strlen(data) + 1);
             wait(NULL);
-            sleep(CLOCK);
             break;
         case PFC_TRANS_PIPE:
             write(pCM->fdServer, data, strlen(data) + 1);
             wait(NULL);
-            sleep(CLOCK);
             break;
         case PFC_TRANS_FILE:
             do {
@@ -108,11 +128,9 @@ void sendDataToTrans(conMeta *pCM, char *data) {
                 if (pCM->pFile != NULL) {
                     break;
                 }
-                sleep(CLOCK);
             } while (1);
             fputs(data, pCM->pFile);
             fclose(pCM->pFile);
-            sleep(CLOCK);
             break;
     }
 }
