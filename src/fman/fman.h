@@ -1,0 +1,2 @@
+
+void fman(int *);

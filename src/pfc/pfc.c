@@ -1,4 +1,5 @@
 #include "pfc.h"
+#include "../fman/fman.h"
 #include "../utility/string.h"
 #include "../constants.h"
 #include <stdio.h>
@@ -15,16 +16,15 @@ void pfc(char *name, char *filePath, char *logPath, char *sentence, unsigned int
     ppfc->filePath = filePath;
 
     char *logPathName = malloc(1 + strlen(logPath) +
-            strlen(ppfc->name) + strlen(".txt"));
+            strlen(ppfc->name) + strlen(".log"));
     
     strcpy(logPathName, logPath);
-    strcat(logPathName, "raw");
     strcat(logPathName, ppfc->name);
     strcat(logPathName, ".log");
 
     ppfc->fileLog = logPathName;
 
-    parseNMEA(ppfc, pptp, sentence, connectionType);
+    parseNMEA(ppfc, pptp, sentence, connectionType); 
 }
 
 void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int connectionType) {
@@ -65,6 +65,7 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
             }
 
         }
+        sleep(CLOCK);
     };
 
     fprintf(pLog, "No more data on file\n");

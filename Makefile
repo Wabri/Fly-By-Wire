@@ -3,6 +3,7 @@ CC=gcc
 PREFIX_GLOBAL=src/
 PREFIX_PFC=$(PREFIX_GLOBAL)/pfc/
 PREFIX_TRANS=$(PREFIX_GLOBAL)/transducer/
+PREFIX_FMAN=$(PREFIX_GLOBAL)/fman/
 PREFIX_UTIL=$(PREFIX_GLOBAL)/utility/
 BINDIR=bin/
 LOGDIR=logs/
@@ -20,15 +21,18 @@ clean:
 install: main
 	@ $(CC) $(BINDIR)*.o -o run -lm
 
-main: transducer pfc constants
+main: pfc transducer fman constants
 	@ $(CC) -c $(PREFIX_GLOBAL)main.c -o $(BINDIR)main.o
 
-pfc: utility constants
+pfc: utility constants 
 	@ $(CC) -c $(PREFIX_PFC)pfc.c -o $(BINDIR)pfc.o
 	@ $(CC) -c $(PREFIX_PFC)structure.c -o $(BINDIR)structure.o
 
 transducer: utility constants
 	@ $(CC) -c $(PREFIX_TRANS)transducer.c -o $(BINDIR)transducer.o
+
+fman:
+	@ $(CC) -c $(PREFIX_FMAN)fman.c -o $(BINDIR)fman.o
 
 utility:
 	@ $(CC) -c $(PREFIX_UTIL)string.c -o $(BINDIR)string.o
