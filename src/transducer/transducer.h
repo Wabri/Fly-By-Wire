@@ -1,6 +1,4 @@
+void transducer(char *);
 
-void transducer();
+char *readInstantSpeed(int);
 
-void readInstantSpeed(int, char *);
-
-int readLine(int,  char *);

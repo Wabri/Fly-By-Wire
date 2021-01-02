@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 void pfc(char *name, char *filePath, char *logPath, char *sentence, unsigned int connectionType) {
@@ -13,15 +14,13 @@ void pfc(char *name, char *filePath, char *logPath, char *sentence, unsigned int
     ppfc->name = name;
     ppfc->filePath = filePath;
 
-    char *logPathName = malloc(1 + strlen(logPath) + strlen("log_") +
+    char *logPathName = malloc(1 + strlen(logPath) +
             strlen(ppfc->name) + strlen(".txt"));
-    logPathName[0] = '\0';
-
-    // TODO: move logs on transducer 
-    strcat(logPathName, logPath);
-    strcat(logPathName, "log_");
+    
+    strcpy(logPathName, logPath);
+    strcat(logPathName, "raw");
     strcat(logPathName, ppfc->name);
-    strcat(logPathName, ".txt");
+    strcat(logPathName, ".log");
 
     ppfc->fileLog = logPathName;
 
@@ -37,23 +36,19 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
     pLog = fopen(pPFC->fileLog, "w+");
 
     if (pFile == NULL) {
-        free(sLine);
-        free(sRecordHead);
-        free(pFile);
-        free(pLog);
-        free(pPTP);
         exit(EXIT_FAILURE);
     }
 
     conMeta *pCM = malloc(sizeof(conMeta));
     pCM->connectionType = connectionType;
+    fprintf(pLog, "Open server connection\n");
     generateConnectionWithTrans(pCM);
 
     while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
         strExtrSeparator(sRecordHead, sLine, ",");
-        fprintf(pLog, "%d compare %s with  %s\n", getpid(), sElement, 
-                sRecordHead);
+        fprintf(pLog, "Compare %s with  %s\n", sElement, sRecordHead);
         if (strcmp(sRecordHead, sElement) == 0) {
+            fprintf(pLog, "\tCatch: %s\n", sLine);
             RawElement *pRawElement = (RawElement *)malloc(sizeof(RawElement));
             extractRawElements(pRawElement, sLine);
             GLL *pGLL = (GLL *)malloc(sizeof(GLL));
@@ -62,47 +57,34 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
 
             char *sInstantSpeed = malloc(sizeof(char[255]));
             sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
+            fprintf(pLog, "\tSend to Transducer %s\n", sLine);
             sendDataToTrans(pCM, sInstantSpeed);
-
-            // ***** TEMP start *****
-            if (connectionType == PFC_TRANS_PIPE) {
-                return;
-            } else if (connectionType == PFC_TRANS_FILE) {
-                return; 
-            }
-            // ***** TEMP end *****
 
             if (NULL != pPTP->next) {
                 pPTP = pPTP->next;
             }
-            fprintf(pLog, "%d catch: %s", getpid(), sLine);
+
         }
     };
 
+    fprintf(pLog, "No more data on file\n");
+    fprintf(pLog, "\tStop connection with Transducer\n");
     stopConnection(pCM);
 
     fclose(pFile);
     fclose(pLog);
-    free(sLine);
-    free(sRecordHead);
-    free(pFile);
-    free(pLog);
-    free(pPTP);
-    free(pCM);
 }
 
 void generateConnectionWithTrans(conMeta *pCM) {
     switch (pCM->connectionType) {
         case PFC_TRANS_SOCKET:
             createSocketServer(pCM, SOCK_TRANS_NAME);
+            pCM->fdClient = accept(pCM->fdServer, pCM->pCliAdd, &(pCM->cliLen));
             break;
         case PFC_TRANS_PIPE:
-            // TODO: Create pipe name
             createPipeServer(pCM, PIPE_TRANS_NAME);
             break;
         case PFC_TRANS_FILE:
-            // TODO: Create file
-            pCM->pFile = fopen(FILE_TRANS_NAME, "w+");
             break;
     }
 }
@@ -110,25 +92,32 @@ void generateConnectionWithTrans(conMeta *pCM) {
 void sendDataToTrans(conMeta *pCM, char *data) {
     switch (pCM->connectionType) {
         case PFC_TRANS_SOCKET:
-            pCM->fdClient = accept(pCM->fdServer, pCM->pCliAdd, &(pCM->cliLen));
-            if (fork() == 0) {
-                write(pCM->fdClient, data, strlen(data) + 1);
-            }                 
-            close(pCM->fdClient);
+            write(pCM->fdClient, data, strlen(data) + 1);
+            wait(NULL);
+            sleep(CLOCK);
             break;
         case PFC_TRANS_PIPE:
             write(pCM->fdServer, data, strlen(data) + 1);
-            sleep(3);
+            wait(NULL);
+            sleep(CLOCK);
             break;
         case PFC_TRANS_FILE:
-            fwrite(data, 1, 255, pCM->pFile);
-            sleep(3);
+            do {
+                pCM->pFile = fopen(FILE_TRANS_NAME, "w+");
+                if (pCM->pFile != NULL) {
+                    break;
+                }
+                sleep(CLOCK);
+            } while (1);
+            fputs(data, pCM->pFile);
+            fclose(pCM->pFile);
+            sleep(CLOCK);
             break;
     }
 }
 
 void stopConnection(conMeta *pCM) {
-    sendDataToTrans(pCM, "stop");
+    sendDataToTrans(pCM, STOP_SIGNAL);
     switch (pCM->connectionType) {
         case PFC_TRANS_SOCKET:
             break;
@@ -136,9 +125,6 @@ void stopConnection(conMeta *pCM) {
             close(pCM->fdServer);
             break;
         case PFC_TRANS_FILE:
-            fclose(pCM->pFile);
             break;
     }
-    free(pCM);
 }
-

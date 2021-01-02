@@ -83,7 +83,7 @@ void addPoint(PTP *pPTP, GLL *pGLL) {
         pPTP->next->traveledDistance =
             computeDistance(pPTP->point, pPTP->next->point);
         pPTP->next->istantSpeed =
-            pPTP->istantSpeed + pPTP->next->traveledDistance / CLOCK;
+            pPTP->istantSpeed + pPTP->next->traveledDistance / DELTA_SEC;
     }
 }
 

@@ -14,27 +14,27 @@ int main(int argc, char *argv[]) {
 
     // Transducer
     if (fork() == 0) {
-        transducer();
+        transducer(TRANS_LOGS_PATH);
         exit(EXIT_SUCCESS);
     }
 
     // PFC1
     if (fork() == 0) {
-        pfc("PFC1", G18_PATH, LOGS_PATH, PFC_1_SENTENCE, PFC_TRANS_SOCKET);
+        pfc("PFC1", G18_PATH, PFC_LOGS_PATH, PFC_1_SENTENCE, PFC_TRANS_SOCKET);
         exit(EXIT_SUCCESS);
     }
 
     // TODO: pfc with pipe
     // PFC2
     if (fork() == 0) {
-        pfc("PFC2", G18_PATH, LOGS_PATH, PFC_2_SENTENCE, PFC_TRANS_PIPE);
+        pfc("PFC2", G18_PATH, PFC_LOGS_PATH, PFC_2_SENTENCE, PFC_TRANS_PIPE);
         exit(EXIT_SUCCESS);
     }
 
     // TODO: pfc with file
     // PFC3
     if (fork() == 0) {
-        pfc("PFC3", G18_PATH, LOGS_PATH, PFC_3_SENTENCE, PFC_TRANS_FILE);
+        pfc("PFC3", G18_PATH, PFC_LOGS_PATH, PFC_3_SENTENCE, PFC_TRANS_FILE);
         exit(EXIT_SUCCESS);
     }
 

@@ -5,6 +5,7 @@ Session.vim
 
 # Binaries
 bin/
+run
 
 # Binaries
 logs/
@@ -61,3 +62,5 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+Fly-By-Wire
