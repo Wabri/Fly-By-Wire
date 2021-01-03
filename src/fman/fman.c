@@ -8,17 +8,17 @@
 #include <limits.h>
 #include <signal.h>
 
-void fman(int *pidPFCs, char *logPath) {
+void fman(int *pidPFCs) {
 
     int fmanStop = 3;
     time_t t;
     srand((unsigned) time(&t));
 
-    char *logPathName = malloc(1 + strlen(logPath) +
-            strlen("failures.log"));
-    strcpy(logPathName, logPath);
-    strcat(logPathName, "failures.log");
-    FILE *pLog = fopen(logPathName, "w+");
+    char *FMAN_LOGS_PATHName = malloc(1 + strlen(FMAN_LOGS_PATH) +
+            strlen(FMAN_FAILURE_LOGS));
+    strcpy(FMAN_LOGS_PATHName, FMAN_LOGS_PATH);
+    strcat(FMAN_LOGS_PATHName, FMAN_FAILURE_LOGS);
+    FILE *pLog = fopen(FMAN_LOGS_PATHName, "w+");
 
     while (fmanStop) {
         int selectedPFC = randRange(3);

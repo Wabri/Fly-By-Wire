@@ -1,4 +1,4 @@
-void fman(int *, char *);
+void fman(int *);
 
 double randPercent();
 

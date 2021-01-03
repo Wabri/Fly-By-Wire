@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 typedef struct pfc {
-    char *name;
     char *filePath;
     char *fileLog;
 } PFC;
@@ -31,16 +30,7 @@ void extractRawElements(RawElement *, char *);
 
 void extractGLL(GLL *, RawElement *);
 
-void printGLL(GLL *);
-
-void printPFC(PFC *);
-
-void fprintPFC(FILE *, PFC *);
-
 void addPoint(PTP *, GLL *);
 
 float computeDistance(GLL *, GLL *);
 
-void printPTPs(PTP *);
-
-void printPTP(PTP *);

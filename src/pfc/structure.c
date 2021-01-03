@@ -61,17 +61,6 @@ void printGLL(GLL *pGLL) {
             pGLL->cParallelDirection, pGLL->iFixTaken, pGLL->sDataValid);
 }
 
-void printPFC(PFC *pPFC) {
-    printf("Name: %s\n File Path: %s\n File Logs: %s\n", pPFC->name,
-            pPFC->filePath, pPFC->fileLog);
-}
-
-void fprintPFC(FILE *pFile, PFC *pPFC) {
-    fprintf(pFile, "Name: %s\n", pPFC->name);
-    fprintf(pFile, "File Path: %s\n", pPFC->filePath);
-    fprintf(pFile, "File Logs: %s\n", pPFC->fileLog);
-}
-
 void addPoint(PTP *pPTP, GLL *pGLL) {
     if (pPTP->point == NULL) {
         pPTP->point = pGLL;
@@ -98,14 +87,3 @@ float computeDistance(GLL *start, GLL *end) {
     return EARTH_RADIUS_KM * fHc;
 }
 
-void printPTPs(PTP *pPTP) {
-    while (pPTP->point != NULL) {
-        printPTP(pPTP);
-        pPTP = pPTP->next;
-    }
-}
-
-void printPTP(PTP *pPTP) {
-    printf("Start: %d, Traveld Distance: %f\n", pPTP->point->iFixTaken,
-            pPTP->traveledDistance);
-}

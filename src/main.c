@@ -1,3 +1,4 @@
+#include "main.h"
 #include "constants.h"
 #include "pfc/pfc.h"
 #include "transducer/transducer.h"
@@ -13,38 +14,42 @@
 
 int main(int argc, char *argv[]) {
 
-    // Transducer
-    if (fork() == 0) {
-        transducer(TRANS_LOGS_PATH);
-        exit(EXIT_SUCCESS);
+    int *pidPFCs = malloc(sizeof(int[3]));
+
+    char* g18Path = extractFromArgument(argc, argv);
+
+    if (!isFileExistsAccess(g18Path)){
+        printf("g18 file not exists: %s\n", g18Path);
+        exit(EXIT_FAILURE);
     }
 
-    int *pidPFCs = malloc(sizeof(int[3]));
+    printf("g18 file: %s\n", g18Path);
     
-    // PFC1
     pidPFCs[0] = fork();
     if (pidPFCs[0] == 0) {
-        pfc("PFC1", G18_PATH, PFC_LOGS_PATH, PFC_1_SENTENCE, PFC_TRANS_SOCKET);
+        pfc(G18_PATH, PFC_SOCK_SENTENCE, PFC_TRANS_SOCKET);
         exit(EXIT_SUCCESS);
     }
 
-    // PFC2
     pidPFCs[1] = fork();
     if (pidPFCs[1] == 0) {
-        pfc("PFC2", G18_PATH, PFC_LOGS_PATH, PFC_2_SENTENCE, PFC_TRANS_PIPE);
+        pfc(G18_PATH, PFC_PIPE_SENTENCE, PFC_TRANS_PIPE);
         exit(EXIT_SUCCESS);
     }
 
-    // PFC3
     pidPFCs[2] = fork();
     if (pidPFCs[2] == 0) {
-        pfc("PFC3", G18_PATH, PFC_LOGS_PATH, PFC_3_SENTENCE, PFC_TRANS_FILE);
+        pfc(G18_PATH, PFC_FILE_SENTENCE, PFC_TRANS_FILE);
+        exit(EXIT_SUCCESS);
+    }
+
+    if (fork() == 0) {
+        transducer();
         exit(EXIT_SUCCESS);
     }
     
-    // FMAN
     if (fork() == 0) {
-        fman(pidPFCs, FMAN_LOGS_PATH);
+        fman(pidPFCs);
         exit(EXIT_SUCCESS);
     }
 
@@ -57,3 +62,18 @@ int main(int argc, char *argv[]) {
     exit(EXIT_SUCCESS);
 }
 
+char* extractFromArgument(int argc, char *argv[]) {
+    if (argc == 1) {
+        return G18_PATH;
+    } else if (argc == 2) {
+        return argv[1];
+    }
+    return "";
+}
+
+int isFileExistsAccess(const char *filePath) {
+    if (access(filePath, F_OK) == -1) {
+        return 0;
+    }
+    return 1;
+}

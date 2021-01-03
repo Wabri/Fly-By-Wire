@@ -20,22 +20,22 @@ void signalUserHandler(int signum)
     }
 }
 
-void pfc(char *name, char *filePath, char *logPath, char *sentence, unsigned int connectionType) {
+void pfc(char *filePath, char *sentence, unsigned int connectionType) {
     PFC pfc, *ppfc = &pfc;
     PTP ptp, *pptp = &ptp;
-    ppfc->name = name;
     ppfc->filePath = filePath;
 
     signal(SIGUSR1, signalUserHandler);
 
-    char *logPathName = malloc(1 + strlen(logPath) +
-            strlen(ppfc->name) + strlen(".log"));
+    char *logName = extractPFCLogName(connectionType);
 
-    strcpy(logPathName, logPath);
-    strcat(logPathName, ppfc->name);
-    strcat(logPathName, ".log");
+    char *PFC_LOGS_PATHName = malloc(1 + strlen(PFC_LOGS_PATH) +
+            strlen(logName));
 
-    ppfc->fileLog = logPathName;
+    strcpy(PFC_LOGS_PATHName, PFC_LOGS_PATH);
+    strcat(PFC_LOGS_PATHName, logName);
+
+    ppfc->fileLog = PFC_LOGS_PATHName;
 
     parseNMEA(ppfc, pptp, sentence, connectionType); 
 }
@@ -146,5 +146,18 @@ void stopConnection(conMeta *pCM) {
             break;
         case PFC_TRANS_FILE:
             break;
+    }
+}
+
+char *extractPFCLogName(unsigned int connectionType) {
+    switch (connectionType) {
+        case PFC_TRANS_SOCKET:
+            return PFC_SOCK_LOG;
+        case PFC_TRANS_PIPE:
+            return PFC_PIPE_LOG;
+        case PFC_TRANS_FILE:
+            return PFC_FILE_LOG;
+        default:
+            return "";
     }
 }
