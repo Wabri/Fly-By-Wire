@@ -6,7 +6,8 @@ PREFIX_TRANS=$(PREFIX_GLOBAL)/transducer/
 PREFIX_FMAN=$(PREFIX_GLOBAL)/fman/
 PREFIX_UTIL=$(PREFIX_GLOBAL)/utility/
 BINDIR=bin/
-LOGDIR=logs/
+LOGDIR=log/
+TMPDIR=tmp/
 
 run: all
 	@ echo "Run"
@@ -16,7 +17,7 @@ all: clean install
 
 clean:
 	@ echo "Clean temporary files and directories"
-	@ rm -rf $(BINDIR) $(LOGDIR)
+	@ rm -rf $(BINDIR) $(LOGDIR) $(TMPDIR)
 
 install: precompile main
 	@ echo "Package binaries on run"
@@ -53,3 +54,4 @@ precompile:
 	@ echo "Create binaries and logs directory"
 	@ mkdir $(BINDIR)
 	@ mkdir $(LOGDIR)
+	@ mkdir $(TMPDIR)
