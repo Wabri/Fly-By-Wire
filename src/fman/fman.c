@@ -14,11 +14,11 @@ void fman(int *pidPFCs) {
     time_t t;
     srand((unsigned) time(&t));
 
-    char *FMAN_LOGS_PATHName = malloc(1 + strlen(FMAN_LOGS_PATH) +
+    char *logPath = malloc(1 + strlen(FMAN_LOGS_PATH) +
             strlen(FMAN_FAILURE_LOGS));
-    strcpy(FMAN_LOGS_PATHName, FMAN_LOGS_PATH);
-    strcat(FMAN_LOGS_PATHName, FMAN_FAILURE_LOGS);
-    FILE *pLog = fopen(FMAN_LOGS_PATHName, "w+");
+    strcpy(logPath, FMAN_LOGS_PATH);
+    strcat(logPath, FMAN_FAILURE_LOGS);
+    FILE *pLog = fopen(logPath, "w+");
 
     while (fmanStop) {
         int selectedPFC = randRange(3);
