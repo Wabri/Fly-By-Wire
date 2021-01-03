@@ -2,13 +2,17 @@
 *.sw*
 .session.vim
 Session.vim
+Fly-By-Wire
 
 # Binaries
 bin/
 run
 
-# Binaries
-logs/
+# Logs
+log/
+
+# Temporary
+tmp/
 
 # Prerequisites
 *.d
@@ -63,4 +67,3 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-Fly-By-Wire

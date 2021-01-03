@@ -10,7 +10,6 @@
 
 void transducer(char *logPath) {
 
-
     // PFC1 Socket
     if (fork() == 0) {
         char *logPathName = malloc(1 + strlen(logPath) +
@@ -61,8 +60,6 @@ void transducer(char *logPath) {
         createPipeClient(pCM2, PIPE_TRANS_NAME);
 
         while (1) {
-            //connection with pfc2
-            //create log for pfc2 called: speedPFC2.log
             char *str = readInstantSpeed(pCM2->fdClient);
             fprintf(pLog, "Received %s from PFC\n", str);
             if (!strcmp(str, STOP_SIGNAL)) {
@@ -97,8 +94,6 @@ void transducer(char *logPath) {
                     fprintf(pLog, "Got priority on data connection file\n");
                     break;
                 }
-                fprintf(pLog, "Failed to get priority on connection file\n");
-                sleep(CLOCK);
             } while (1);
             fgets(str, 255, pCM3->pFile);
             fprintf(pLog, "Received %s from PFC\n", str);
