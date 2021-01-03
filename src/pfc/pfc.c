@@ -63,7 +63,7 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
         strExtrSeparator(sRecordHead, sLine, ",");
         fprintf(pLog, "Compare %s with  %s\n", sElement, sRecordHead);
         if (strcmp(sRecordHead, sElement) == 0) {
-            fprintf(pLog, "\tCatch: %s\n", sLine);
+            fprintf(pLog, "\tCatch: %s", sLine);
 
             RawElement *pRawElement = (RawElement *)malloc(sizeof(RawElement));
             extractRawElements(pRawElement, sLine);
@@ -74,12 +74,13 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
 
             if (BIAS) {
                 pPTP->istantSpeed = (float)((int)round(pPTP->istantSpeed) << 2);
+                fprintf(pLog, "\t\tBias %f\n", pPTP->istantSpeed);
                 BIAS = DEFAULT_BIAS;
             }
 
             char *sInstantSpeed = malloc(sizeof(char[255]));
             sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
-            fprintf(pLog, "\tSend to Transducer %s\n", sLine);
+            fprintf(pLog, "\tSend to Transducer %s\n", sInstantSpeed);
             sendDataToTrans(pCM, sInstantSpeed);
 
             if (NULL != pPTP->next) {
