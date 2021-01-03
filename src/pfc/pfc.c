@@ -21,15 +21,15 @@ void signalUserHandler(int signum)
 }
 
 void pfc(char *filePath, char *sentence, unsigned int connectionType) {
-    PFC pfc, *ppfc = &pfc;
-    PTP ptp, *pptp = &ptp;
-    ppfc->filePath = filePath;
+    PFC *pPFC = malloc(sizeof(PFC));
+    PTP *pPTP = malloc(sizeof(PTP));
+    pPFC->filePath = filePath;
 
     signal(SIGUSR1, signalUserHandler);
 
-    ppfc->fileLog = extractPFCLogName(connectionType);
+    pPFC->fileLog = extractPFCLogName(connectionType);
 
-    parseNMEA(ppfc, pptp, sentence, connectionType); 
+    parseNMEA(pPFC, pPTP, sentence, connectionType); 
 }
 
 void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int connectionType) {

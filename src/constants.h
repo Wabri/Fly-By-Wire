@@ -1,7 +1,7 @@
 // General
 #define G18_PATH "resources/G18.txt"
 #define LOGS_PATH "log/"
-#define CLOCK 1
+#define CLOCK 0
 
 // Math
 #define EARTH_RADIUS_KM 6371
