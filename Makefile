@@ -11,7 +11,7 @@ TMPDIR=tmp/
 
 run: all
 	@ echo "Run"
-	@ ./run resources/G18.txt
+	@ ./run
 
 all: clean install 
 
@@ -39,10 +39,6 @@ transducer: precompile utility constants
 fman: precompile
 	@ echo "Compile failure manager"
 	@ $(CC) -c $(PREFIX_FMAN)fman.c -o $(BINDIR)fman.o
-
-wes: precompile
-	@ echo "Compile notification pfc manager"
-	@ $(CC) -c $(PREFIX_FMAN)wes.c -o $(BINDIR)wes.o
 
 utility: precompile
 	@ echo "Compile utilities"

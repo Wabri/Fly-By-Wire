@@ -58,14 +58,17 @@ void addPoint(PTP *pPTP, GLL *pGLL) {
     if (pPTP->point == NULL) {
         pPTP->point = pGLL;
         pPTP->traveledDistance = 0;
-        pPTP->istantSpeed = 0;
+        pPTP->instantSpeed = 0;
     } else {
         pPTP->next = (PTP *)malloc(sizeof(PTP));
         pPTP->next->point = pGLL;
         pPTP->next->traveledDistance =
             computeDistance(pPTP->point, pPTP->next->point);
-        pPTP->next->istantSpeed =
-            pPTP->istantSpeed + pPTP->next->traveledDistance / DELTA_SEC;
+        pPTP->next->instantSpeed =
+            pPTP->instantSpeed + pPTP->next->traveledDistance / DELTA_SEC;
+        printf("TD:%f\n",pPTP->next->traveledDistance);
+        printf("DS:%d\n",DELTA_SEC);
+        printf("IS:%f\n",pPTP->next->instantSpeed);
     }
 }
 

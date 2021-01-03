@@ -61,13 +61,13 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
             addPoint(pPTP, pGLL);
 
             if (BIAS) {
-                pPTP->istantSpeed = (float)((int)round(pPTP->istantSpeed) << 2);
-                fprintf(pLog, "\t\tBias %f\n", pPTP->istantSpeed);
+                pPTP->instantSpeed = (float)((int)round(pPTP->instantSpeed) << 2);
+                fprintf(pLog, "\t\tBias %f\n", pPTP->instantSpeed);
                 BIAS = DEFAULT_BIAS;
             }
 
             char *sInstantSpeed = malloc(sizeof(char[255]));
-            sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
+            sprintf(sInstantSpeed, "%f" , pPTP->instantSpeed);
             fprintf(pLog, "\tSend to Transducer %s\n", sInstantSpeed);
             sendDataToTrans(pCM, sInstantSpeed);
 
