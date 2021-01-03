@@ -13,33 +13,29 @@
 #include <wait.h>
 
 int main(int argc, char *argv[]) {
-
-    int *pidPFCs = malloc(sizeof(int[3]));
-
-    char* g18Path = extractFromArgument(argc, argv);
+    char* g18Path = extractG18FromArgument(argc, argv);
 
     if (!isFileExistsAccess(g18Path)){
-        printf("g18 file not exists: %s\n", g18Path);
         exit(EXIT_FAILURE);
     }
 
-    printf("g18 file: %s\n", g18Path);
+    int *pidPFCs = malloc(sizeof(int[3]));
     
     pidPFCs[0] = fork();
     if (pidPFCs[0] == 0) {
-        pfc(G18_PATH, PFC_SOCK_SENTENCE, PFC_TRANS_SOCKET);
+        pfc(g18Path, PFC_SOCK_SENTENCE, PFC_TRANS_SOCKET);
         exit(EXIT_SUCCESS);
     }
 
     pidPFCs[1] = fork();
     if (pidPFCs[1] == 0) {
-        pfc(G18_PATH, PFC_PIPE_SENTENCE, PFC_TRANS_PIPE);
+        pfc(g18Path, PFC_PIPE_SENTENCE, PFC_TRANS_PIPE);
         exit(EXIT_SUCCESS);
     }
 
     pidPFCs[2] = fork();
     if (pidPFCs[2] == 0) {
-        pfc(G18_PATH, PFC_FILE_SENTENCE, PFC_TRANS_FILE);
+        pfc(g18Path, PFC_FILE_SENTENCE, PFC_TRANS_FILE);
         exit(EXIT_SUCCESS);
     }
 
@@ -62,7 +58,7 @@ int main(int argc, char *argv[]) {
     exit(EXIT_SUCCESS);
 }
 
-char* extractFromArgument(int argc, char *argv[]) {
+char* extractG18FromArgument(int argc, char *argv[]) {
     if (argc == 1) {
         return G18_PATH;
     } else if (argc == 2) {

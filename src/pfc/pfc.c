@@ -40,10 +40,6 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
     pFile = fopen(pPFC->filePath, "r");
     pLog = fopen(pPFC->fileLog, "w+");
 
-    if (pFile == NULL) {
-        exit(EXIT_FAILURE);
-    }
-
     fprintf(pLog, "PFC %d\n", getpid());
 
     conMeta *pCM = malloc(sizeof(conMeta));
@@ -146,17 +142,21 @@ char *extractPFCLogName(unsigned int connectionType) {
     switch (connectionType) {
         case PFC_TRANS_SOCKET:
             logName = PFC_SOCK_LOG;
+            break;
         case PFC_TRANS_PIPE:
             logName = PFC_PIPE_LOG;
+            break;
         case PFC_TRANS_FILE:
             logName = PFC_FILE_LOG;
+            break;
         default:
             logName = "";
+            break;
     }
 
     char *logPathName = malloc(1 + strlen(PFC_LOGS_PATH) + strlen(logName));
     strcpy(logPathName, PFC_LOGS_PATH);
     strcat(logPathName, logName);
-    
+
     return logPathName;
 }

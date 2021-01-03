@@ -54,13 +54,6 @@ void extractGLL(GLL *pGLL, RawElement *pRawElement) {
     pGLL->sDataValid = pRawElementTemp->element;
 }
 
-void printGLL(GLL *pGLL) {
-    printf("Latitude: %f, Meridian direction: %c, Longitude: %f, Parallel "
-            "direction: %c, Taken: %d, DataValid: %s",
-            pGLL->fLatitude, pGLL->cMeridianDirection, pGLL->fLongitude,
-            pGLL->cParallelDirection, pGLL->iFixTaken, pGLL->sDataValid);
-}
-
 void addPoint(PTP *pPTP, GLL *pGLL) {
     if (pPTP->point == NULL) {
         pPTP->point = pGLL;

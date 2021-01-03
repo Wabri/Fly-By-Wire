@@ -1,6 +1,6 @@
 
 int main(int, char**);
 
-char* extractFromArgument(int, char**);
+char* extractG18FromArgument(int, char**);
 
 int isFileExistsAccess(const char *);
