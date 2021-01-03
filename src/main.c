@@ -1,3 +1,4 @@
+#include "main.h"
 #include "constants.h"
 #include "pfc/pfc.h"
 #include "transducer/transducer.h"
@@ -12,48 +13,68 @@
 #include <wait.h>
 
 int main(int argc, char *argv[]) {
+    char* g18Path = extractG18FromArgument(argc, argv);
+    int processCounter = 0;
 
-    // Transducer
-    if (fork() == 0) {
-        transducer(TRANS_LOGS_PATH);
-        exit(EXIT_SUCCESS);
+    if (!isFileExistsAccess(g18Path)){
+        exit(EXIT_FAILURE);
     }
 
     int *pidPFCs = malloc(sizeof(int[3]));
-    
-    // PFC1
+
+    processCounter += 1;
     pidPFCs[0] = fork();
     if (pidPFCs[0] == 0) {
-        pfc("PFC1", G18_PATH, PFC_LOGS_PATH, PFC_1_SENTENCE, PFC_TRANS_SOCKET);
+        pfc(g18Path, PFC_SOCK_SENTENCE, PFC_TRANS_SOCKET);
         exit(EXIT_SUCCESS);
     }
 
-    // PFC2
+    processCounter += 1;
     pidPFCs[1] = fork();
     if (pidPFCs[1] == 0) {
-        pfc("PFC2", G18_PATH, PFC_LOGS_PATH, PFC_2_SENTENCE, PFC_TRANS_PIPE);
+        pfc(g18Path, PFC_PIPE_SENTENCE, PFC_TRANS_PIPE);
         exit(EXIT_SUCCESS);
     }
 
-    // PFC3
+    processCounter += 1;
     pidPFCs[2] = fork();
     if (pidPFCs[2] == 0) {
-        pfc("PFC3", G18_PATH, PFC_LOGS_PATH, PFC_3_SENTENCE, PFC_TRANS_FILE);
-        exit(EXIT_SUCCESS);
-    }
-    
-    // FMAN
-    if (fork() == 0) {
-        fman(pidPFCs, FMAN_LOGS_PATH);
+        pfc(g18Path, PFC_FILE_SENTENCE, PFC_TRANS_FILE);
         exit(EXIT_SUCCESS);
     }
 
-    wait(NULL);
-    wait(NULL);
-    wait(NULL);
-    wait(NULL);
-    wait(NULL);
+    processCounter += 1;
+    if (fork() == 0) {
+        transducer();
+        exit(EXIT_SUCCESS);
+    }
+
+    processCounter += 1;
+    if (fork() == 0) {
+        fman(pidPFCs);
+        exit(EXIT_SUCCESS);
+    }
+
+    while (processCounter) {
+        wait(NULL);
+        processCounter -= 1;
+    }
 
     exit(EXIT_SUCCESS);
 }
 
+char* extractG18FromArgument(int argc, char *argv[]) {
+    if (argc == 1) {
+        return G18_PATH;
+    } else if (argc == 2) {
+        return argv[1];
+    }
+    return "";
+}
+
+int isFileExistsAccess(const char *filePath) {
+    if (access(filePath, F_OK) == -1) {
+        return 0;
+    }
+    return 1;
+}

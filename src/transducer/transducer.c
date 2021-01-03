@@ -8,15 +8,15 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void transducer(char *logPath) {
+void transducer() {
 
     // PFC1 Socket
     if (fork() == 0) {
-        char *logPathName = malloc(1 + strlen(logPath) +
-                strlen("speedPFC1.log"));
-        strcpy(logPathName, logPath);
-        strcat(logPathName, "speedPFC1.log");
-        FILE *pLog = fopen(logPathName, "w+");
+        char *logPath = extractTransLogName(TRANS_SOCK_LOGS);
+        FILE *pLog = fopen(logPath, "w+");
+
+        char *speedLogPath = extractTransSpeedLogName(TRANS_SPFCS_LOGS);
+        FILE *pSpeedLog = fopen(speedLogPath, "w+");
 
         conMeta *pCM1 = malloc(sizeof(conMeta));
         fprintf(pLog, "Open socket client connection with PFC1\n");
@@ -38,6 +38,7 @@ void transducer(char *logPath) {
                 fprintf(pLog, "\tStop signal detected on socket\n");
                 break;
             }
+            fprintf(pSpeedLog, "%s\n", str);
             sleep(CLOCK);
         }
 
@@ -49,11 +50,11 @@ void transducer(char *logPath) {
 
     // PFC2 Pipe
     if (fork() == 0) {
-        char *logPathName = malloc(1 + strlen(logPath) +
-                strlen("speedPFC2.log"));
-        strcpy(logPathName, logPath);
-        strcat(logPathName, "speedPFC2.log");
-        FILE *pLog = fopen(logPathName, "w+");
+        char *logPath = extractTransLogName(TRANS_PIPE_LOGS);
+        FILE *pLog = fopen(logPath, "w+");
+
+        char *speedLogPath = extractTransSpeedLogName(TRANS_SPFCP_LOGS);
+        FILE *pSpeedLog = fopen(speedLogPath, "w+");
 
         conMeta *pCM2 = malloc(sizeof(conMeta));
         fprintf(pLog, "Open pipe client connection with PFC2\n");
@@ -66,6 +67,7 @@ void transducer(char *logPath) {
                 fprintf(pLog, "\tStop signal detected on pipe\n");
                 break;
             }
+            fprintf(pSpeedLog, "%s\n", str);
             sleep(CLOCK);
         }
 
@@ -78,11 +80,11 @@ void transducer(char *logPath) {
 
     // PFC3 FILE
     if (fork() == 0) {
-        char *logPathName = malloc(1 + strlen(logPath) +
-                strlen("speedPFC3.log"));
-        strcpy(logPathName, logPath);
-        strcat(logPathName, "speedPFC3.log");
-        FILE *pLog = fopen(logPathName, "w+");
+        char *logPath = extractTransLogName(TRANS_FILE_LOGS);
+        FILE *pLog = fopen(logPath, "w+");
+
+        char *speedLogPath = extractTransSpeedLogName(TRANS_SPFCF_LOGS);
+        FILE *pSpeedLog = fopen(speedLogPath, "w+");
 
         conMeta *pCM3 = malloc(sizeof(conMeta));
 
@@ -102,6 +104,7 @@ void transducer(char *logPath) {
                 fprintf(pLog, "\tStop signal detected on file\n");
                 break;
             }
+            fprintf(pSpeedLog, "%s\n", str);
             sleep(CLOCK);
         }
         fprintf(pLog, "Close file client connection with PFC\n");
@@ -120,3 +123,16 @@ char *readInstantSpeed(int fd) {
     return str;
 }
 
+char *extractTransLogName(char *logName) {
+    char *temp = malloc(1 + strlen(TRANS_LOGS_PATH) + strlen(logName));
+    strcpy(temp, TRANS_LOGS_PATH);
+    strcat(temp, logName);
+    return temp;
+}
+
+char *extractTransSpeedLogName(char *logName) {
+    char *temp = malloc(1 + strlen(TRANS_LOGS_PATH) + strlen(logName));
+    strcpy(temp, TRANS_LOGS_PATH);
+    strcat(temp, logName);
+    return temp;
+}

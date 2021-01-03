@@ -20,24 +20,16 @@ void signalUserHandler(int signum)
     }
 }
 
-void pfc(char *name, char *filePath, char *logPath, char *sentence, unsigned int connectionType) {
-    PFC pfc, *ppfc = &pfc;
-    PTP ptp, *pptp = &ptp;
-    ppfc->name = name;
-    ppfc->filePath = filePath;
+void pfc(char *filePath, char *sentence, unsigned int connectionType) {
+    PFC *pPFC = malloc(sizeof(PFC));
+    PTP *pPTP = malloc(sizeof(PTP));
+    pPFC->filePath = filePath;
 
     signal(SIGUSR1, signalUserHandler);
 
-    char *logPathName = malloc(1 + strlen(logPath) +
-            strlen(ppfc->name) + strlen(".log"));
+    pPFC->fileLog = extractPFCLogName(connectionType);
 
-    strcpy(logPathName, logPath);
-    strcat(logPathName, ppfc->name);
-    strcat(logPathName, ".log");
-
-    ppfc->fileLog = logPathName;
-
-    parseNMEA(ppfc, pptp, sentence, connectionType); 
+    parseNMEA(pPFC, pPTP, sentence, connectionType); 
 }
 
 void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int connectionType) {
@@ -47,10 +39,6 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
     PTP *pPTP = pPointToPoint;
     pFile = fopen(pPFC->filePath, "r");
     pLog = fopen(pPFC->fileLog, "w+");
-
-    if (pFile == NULL) {
-        exit(EXIT_FAILURE);
-    }
 
     fprintf(pLog, "PFC %d\n", getpid());
 
@@ -73,13 +61,13 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
             addPoint(pPTP, pGLL);
 
             if (BIAS) {
-                pPTP->istantSpeed = (float)((int)round(pPTP->istantSpeed) << 2);
-                fprintf(pLog, "\t\tBias %f\n", pPTP->istantSpeed);
+                pPTP->instantSpeed = (float)((int)round(pPTP->instantSpeed) << 2);
+                fprintf(pLog, "\t\tBias %f\n", pPTP->instantSpeed);
                 BIAS = DEFAULT_BIAS;
             }
 
             char *sInstantSpeed = malloc(sizeof(char[255]));
-            sprintf(sInstantSpeed, "%f" , pPTP->istantSpeed);
+            sprintf(sInstantSpeed, "%f" , pPTP->instantSpeed);
             fprintf(pLog, "\tSend to Transducer %s\n", sInstantSpeed);
             sendDataToTrans(pCM, sInstantSpeed);
 
@@ -147,4 +135,28 @@ void stopConnection(conMeta *pCM) {
         case PFC_TRANS_FILE:
             break;
     }
+}
+
+char *extractPFCLogName(unsigned int connectionType) {
+    char *logName;
+    switch (connectionType) {
+        case PFC_TRANS_SOCKET:
+            logName = PFC_SOCK_LOG;
+            break;
+        case PFC_TRANS_PIPE:
+            logName = PFC_PIPE_LOG;
+            break;
+        case PFC_TRANS_FILE:
+            logName = PFC_FILE_LOG;
+            break;
+        default:
+            logName = "";
+            break;
+    }
+
+    char *logPathName = malloc(1 + strlen(PFC_LOGS_PATH) + strlen(logName));
+    strcpy(logPathName, PFC_LOGS_PATH);
+    strcat(logPathName, logName);
+
+    return logPathName;
 }

@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 typedef struct pfc {
-    char *name;
     char *filePath;
     char *fileLog;
 } PFC;
@@ -23,7 +22,7 @@ typedef struct rawElement {
 typedef struct pointToPoint {
     GLL *point;
     float traveledDistance;
-    float istantSpeed;
+    float instantSpeed;
     struct pointToPoint *next;
 } PTP;
 
@@ -31,16 +30,7 @@ void extractRawElements(RawElement *, char *);
 
 void extractGLL(GLL *, RawElement *);
 
-void printGLL(GLL *);
-
-void printPFC(PFC *);
-
-void fprintPFC(FILE *, PFC *);
-
 void addPoint(PTP *, GLL *);
 
 float computeDistance(GLL *, GLL *);
 
-void printPTPs(PTP *);
-
-void printPTP(PTP *);
