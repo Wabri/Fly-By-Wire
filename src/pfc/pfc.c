@@ -47,6 +47,8 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
     fprintf(pLog, "Open server connection\n");
     generateConnectionWithTrans(pCM);
 
+    int counter = -1;
+
     while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
         strExtrSeparator(sRecordHead, sLine, ",");
         fprintf(pLog, "Compare %s with  %s\n", sElement, sRecordHead);
@@ -66,10 +68,11 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
                 BIAS = DEFAULT_BIAS;
             }
 
-            char *sInstantSpeed = malloc(sizeof(char[255]));
-            sprintf(sInstantSpeed, "%f" , pPTP->instantSpeed);
-            fprintf(pLog, "\tSend to Transducer %s\n", sInstantSpeed);
-            sendDataToTrans(pCM, sInstantSpeed);
+            char data[64];
+            counter += 1;
+            sprintf(data, "%i %f", counter, pPTP->instantSpeed);
+            fprintf(pLog, "\tSend to Transducer %s\n", data);
+            sendDataToTrans(pCM, data);
 
             if (NULL != pPTP->next) {
                 pPTP = pPTP->next;
@@ -97,6 +100,13 @@ void generateConnectionWithTrans(conMeta *pCM) {
             createPipeServer(pCM, PIPE_TRANS_NAME);
             break;
         case PFC_TRANS_FILE:
+            do {
+                pCM->pFile = fopen(FILE_TRANS_NAME, "w+");
+                if (pCM->pFile != NULL) {
+                    break;
+                }
+            } while (1);
+            sendDataToTrans(pCM, "-1 -1");
             break;
     }
 }
@@ -112,14 +122,9 @@ void sendDataToTrans(conMeta *pCM, char *data) {
             wait(NULL);
             break;
         case PFC_TRANS_FILE:
-            do {
-                pCM->pFile = fopen(FILE_TRANS_NAME, "w+");
-                if (pCM->pFile != NULL) {
-                    break;
-                }
-            } while (1);
+            rewind(pCM->pFile);
             fputs(data, pCM->pFile);
-            fclose(pCM->pFile);
+            fflush(pCM->pFile);
             break;
     }
 }
@@ -133,6 +138,7 @@ void stopConnection(conMeta *pCM) {
             close(pCM->fdServer);
             break;
         case PFC_TRANS_FILE:
+            fclose(pCM->pFile);
             break;
     }
 }

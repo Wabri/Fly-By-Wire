@@ -1,4 +1,6 @@
-int strExtrSeparator(char *dest, char *source, const char *separetor);
+int strExtrSeparator(char *, char *, const char *);
 
-void strExtrInterval(char *dest, char *source, int start, int end);
+int strSeparatorIndex(char *, const char);
+
+void strExtrInterval(char *, char *, int , int );
 
