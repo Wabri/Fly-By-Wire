@@ -3,6 +3,7 @@
 #include "pfc/pfc.h"
 #include "transducer/transducer.h"
 #include "fman/fman.h"
+#include "wes/wes.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,26 @@
 int main(int argc, char *argv[]) {
     char* g18Path = extractG18FromArgument(argc, argv);
     int processCounter = 0;
+
+    //FILE *pSL1;
+    //do{
+    //    pSL1 = fopen(g18Path, "r");
+    //    if (pSL1 != NULL) {
+    //        break;
+    //    }
+    //} while (1);
+
+    //long status = 0;
+
+    //do {
+    //    status = ftell(pSL1);
+    //    printf("%c\n", getc(pSL1));
+    //    fseek(pSL1, -status, SEEK_CUR);
+    //    fflush(pSL1);
+    //    sleep(CLOCK);
+    //}while (1);
+
+    //exit(EXIT_SUCCESS);
 
     if (!isFileExistsAccess(g18Path)){
         exit(EXIT_FAILURE);
@@ -52,6 +73,12 @@ int main(int argc, char *argv[]) {
     processCounter += 1;
     if (fork() == 0) {
         fman(pidPFCs);
+        exit(EXIT_SUCCESS);
+    }
+
+    processCounter += 1;
+    if (fork() == 0) {
+        wes();
         exit(EXIT_SUCCESS);
     }
 

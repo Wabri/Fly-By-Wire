@@ -4,6 +4,7 @@ PREFIX_GLOBAL=src/
 PREFIX_PFC=$(PREFIX_GLOBAL)/pfc/
 PREFIX_TRANS=$(PREFIX_GLOBAL)/transducer/
 PREFIX_FMAN=$(PREFIX_GLOBAL)/fman/
+PREFIX_WES=$(PREFIX_GLOBAL)/wes/
 PREFIX_UTIL=$(PREFIX_GLOBAL)/utility/
 BINDIR=bin/
 LOGDIR=log/
@@ -23,7 +24,7 @@ install: precompile main
 	@ echo "Package binaries on run"
 	@ $(CC) $(BINDIR)*.o -o run -lm
 
-main: precompile pfc transducer fman constants
+main: precompile pfc transducer fman wes constants
 	@ echo "Compile main"
 	@ $(CC) -c $(PREFIX_GLOBAL)main.c -o $(BINDIR)main.o
 
@@ -39,6 +40,10 @@ transducer: precompile utility constants
 fman: precompile
 	@ echo "Compile failure manager"
 	@ $(CC) -c $(PREFIX_FMAN)fman.c -o $(BINDIR)fman.o
+
+wes: precompile
+	@ echo "Compile wes"
+	@ $(CC) -c $(PREFIX_WES)wes.c -o $(BINDIR)wes.o
 
 utility: precompile
 	@ echo "Compile utilities"
