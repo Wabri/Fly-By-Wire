@@ -3,12 +3,14 @@
 #include "pfc/pfc.h"
 #include "transducer/transducer.h"
 #include "fman/fman.h"
+#include "wes/wes.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <wait.h>
 
@@ -52,6 +54,12 @@ int main(int argc, char *argv[]) {
     processCounter += 1;
     if (fork() == 0) {
         fman(pidPFCs);
+        exit(EXIT_SUCCESS);
+    }
+
+    processCounter += 1;
+    if (fork() == 0) {
+        wes(pidPFCs);
         exit(EXIT_SUCCESS);
     }
 

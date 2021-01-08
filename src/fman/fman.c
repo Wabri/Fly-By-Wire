@@ -23,7 +23,6 @@ void fman(int *pidPFCs) {
     while (fmanStop) {
         int selectedPFC = randRange(3);
         if (kill(pidPFCs[selectedPFC],0) == 0) {
-            //sendSignal(pidPFCs, selectedPFC, percentage);
             if (randPercent() <= FMAN_PROB_STOP) {
                 fprintf(pLog, "STOP PFC%d with pid %d\n", selectedPFC + 1, pidPFCs[selectedPFC]);
                 kill(pidPFCs[selectedPFC], SIGSTOP);
@@ -48,6 +47,7 @@ void fman(int *pidPFCs) {
                 }
             }
         }
+        fflush(pLog);
         sleep(CLOCK);
     }
     fprintf(pLog, "No more PFC alive\n\tStop running FMAN\n");

@@ -1,6 +1,8 @@
 #include "transducer.h"
 #include "../constants.h"
 #include "../utility/connection.h"
+#include "../utility/string.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,6 +41,8 @@ void transducer() {
                 break;
             }
             fprintf(pSpeedLog, "%s\n", str);
+            fflush(pLog);
+            fflush(pSpeedLog);
             sleep(CLOCK);
         }
 
@@ -68,6 +72,7 @@ void transducer() {
                 break;
             }
             fprintf(pSpeedLog, "%s\n", str);
+            fflush(pSpeedLog);
             sleep(CLOCK);
         }
 
@@ -87,28 +92,40 @@ void transducer() {
         FILE *pSpeedLog = fopen(speedLogPath, "w+");
 
         conMeta *pCM3 = malloc(sizeof(conMeta));
+        do{
+            pCM3->pFile = fopen(FILE_TRANS_NAME, "r");
+            if (pCM3->pFile != NULL) {
+                break;
+            }
+            sleep(CLOCK);
+        } while (1);
+
+        int counter = -1;
 
         while (1) {
-            char str[255];
-            do{
-                pCM3->pFile = fopen(FILE_TRANS_NAME, "r");
-                if (pCM3->pFile != NULL) {
-                    fprintf(pLog, "Got priority on data connection file\n");
-                    break;
-                }
-            } while (1);
-            fgets(str, 255, pCM3->pFile);
-            fprintf(pLog, "Received %s from PFC\n", str);
-            fclose(pCM3->pFile);
-            if (!strcmp(str, STOP_SIGNAL)) {
+            rewind(pCM3->pFile);
+            char data[64];
+            fgets(data, 64, pCM3->pFile);
+            if (!strcmp(data, STOP_SIGNAL)) {
                 fprintf(pLog, "\tStop signal detected on file\n");
                 break;
             }
-            fprintf(pSpeedLog, "%s\n", str);
+            char temp[64];
+            strExtrSeparator(temp, data, " ");
+            int tempCounter = atoi(temp); 
+            if (tempCounter == counter) {
+                continue;
+                sleep(CLOCK);
+            }
+            counter = tempCounter;
+            fprintf(pLog, "Received %s from PFC\n", data);
+            fprintf(pSpeedLog, "%s\n", data);
+            fflush(pSpeedLog);
             sleep(CLOCK);
         }
         fprintf(pLog, "Close file client connection with PFC\n");
         fclose(pLog);
+        fclose(pCM3->pFile);
         exit(EXIT_SUCCESS);
     }
 
