@@ -1,5 +1,5 @@
 #include "structure.h"
-#include "../constants.h"
+#include "../config.h"
 #include "../utility/angles.h"
 #include "../utility/string.h"
 #include <math.h>

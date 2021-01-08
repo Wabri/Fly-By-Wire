@@ -1,5 +1,5 @@
 #include "connection.h"
-#include "../constants.h"
+#include "../config.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>

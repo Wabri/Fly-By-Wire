@@ -1,3 +1,6 @@
+#ifndef _CONNECTIONH_
+#define _CONNECTIONH_
+
 #include <stdio.h>
 #include <sys/un.h>
 
@@ -22,3 +25,4 @@ void createPipeClient(conMeta *, char *);
 
 void createPipeServer(conMeta *, char *);
 
+#endif

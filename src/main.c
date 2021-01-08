@@ -1,9 +1,10 @@
 #include "main.h"
-#include "constants.h"
+#include "config.h"
 #include "pfc/pfc.h"
 #include "transducer/transducer.h"
 #include "fman/fman.h"
 #include "wes/wes.h"
+#include "pfcds/pfcds.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,6 +61,12 @@ int main(int argc, char *argv[]) {
     processCounter += 1;
     if (fork() == 0) {
         wes(pidPFCs);
+        exit(EXIT_SUCCESS);
+    }
+
+    processCounter += 1;
+    if (fork() == 0) {
+        pfcds();
         exit(EXIT_SUCCESS);
     }
 

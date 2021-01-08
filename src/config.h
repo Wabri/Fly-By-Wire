@@ -26,14 +26,19 @@
 // FMAN
 #define FMAN_LOGS_PATH LOGS_PATH
 #define FMAN_FAILURE_LOGS "failures.log"
-#define FMAN_PROB_STOP .3
+#define FMAN_PROB_STOP .01
 #define FMAN_PROB_INT .0001
-#define FMAN_PROB_CONT .2
-#define FMAN_PROB_USER .1
+#define FMAN_PROB_CONT .1
+#define FMAN_PROB_USER .5
 
 // WES
 #define WES_LOGS_PATH LOGS_PATH
 #define WES_LOGS "status.log"
+
+// PFCDS
+#define PFCDS_LOGS_PATH LOGS_PATH
+#define PFCDS_LOGS "switch.log"
+#define PIPE_PFCDS_WES "tmp/DiscoSwitch"
 
 // PFC1: socket
 #define PFC_SOCK_LOG "PFC1.log"

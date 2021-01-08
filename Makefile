@@ -25,7 +25,7 @@ install: precompile main
 	@ echo "Package binaries on run"
 	@ $(CC) $(BINDIR)*.o -o run -lm
 
-main: pfc transducer fman wes config
+main: pfc transducer fman wes pfcds config
 	@ echo "Compile main"
 	@ $(CC) -c $(PREFIX_GLOBAL)main.c -o $(BINDIR)main.o
 

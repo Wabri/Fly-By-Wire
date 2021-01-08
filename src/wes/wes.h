@@ -1,4 +1,4 @@
-
+#include "../utility/connection.h"
 #include <stdio.h>
 
 void wes(int *);
@@ -11,5 +11,6 @@ typedef struct name {
     float speed;
 } SpeedWesPFC;
 
-void extractSpeedInfos(int *, SpeedWesPFC *);
+int extractSpeedInfos(int *, SpeedWesPFC *);
 
+void sendDataToPFCDS(conMeta *, char *);

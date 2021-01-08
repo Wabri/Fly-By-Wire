@@ -1,7 +1,7 @@
 #include "pfc.h"
 #include "../fman/fman.h"
 #include "../utility/string.h"
-#include "../constants.h"
+#include "../config.h"
 #include <math.h>
 #include <signal.h>
 #include <stdio.h>
@@ -63,7 +63,7 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
             addPoint(pPTP, pGLL);
 
             if (BIAS) {
-                pPTP->instantSpeed = (float)((int)round(pPTP->instantSpeed) << 2);
+                pPTP->instantSpeed = (int)round(pPTP->instantSpeed) << 2;
                 fprintf(pLog, "\t\tBias %f\n", pPTP->instantSpeed);
                 BIAS = DEFAULT_BIAS;
             }

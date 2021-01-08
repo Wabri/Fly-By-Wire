@@ -1,5 +1,5 @@
 #include "transducer.h"
-#include "../constants.h"
+#include "../config.h"
 #include "../utility/connection.h"
 #include "../utility/string.h"
 #include <math.h>
