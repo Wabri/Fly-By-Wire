@@ -26,9 +26,9 @@
 // FMAN
 #define FMAN_LOGS_PATH LOGS_PATH
 #define FMAN_FAILURE_LOGS "failures.log"
-#define FMAN_PROB_STOP .01
+#define FMAN_PROB_STOP .4
 #define FMAN_PROB_INT .0001
-#define FMAN_PROB_CONT .1
+#define FMAN_PROB_CONT .2
 #define FMAN_PROB_USER .1
 
 // WES

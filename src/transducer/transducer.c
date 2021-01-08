@@ -97,6 +97,7 @@ void transducer() {
             if (pCM3->pFile != NULL) {
                 break;
             }
+            sleep(CLOCK);
         } while (1);
 
         int counter = -1;
@@ -114,6 +115,7 @@ void transducer() {
             int tempCounter = atoi(temp); 
             if (tempCounter == counter) {
                 continue;
+                sleep(CLOCK);
             }
             counter = tempCounter;
             fprintf(pLog, "Received %s from PFC\n", data);

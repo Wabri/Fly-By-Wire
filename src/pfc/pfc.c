@@ -105,6 +105,7 @@ void generateConnectionWithTrans(conMeta *pCM) {
                 if (pCM->pFile != NULL) {
                     break;
                 }
+                sleep(CLOCK);
             } while (1);
             sendDataToTrans(pCM, "-1 -1");
             break;
