@@ -11,4 +11,5 @@ typedef struct name {
     float speed;
 } SpeedWesPFC;
 
-void extractSpeedInfos(int *, SpeedWesPFC *, int);
+void extractSpeedInfos(int *, SpeedWesPFC *);
+

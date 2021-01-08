@@ -26,14 +26,14 @@
 // FMAN
 #define FMAN_LOGS_PATH LOGS_PATH
 #define FMAN_FAILURE_LOGS "failures.log"
-#define FMAN_PROB_STOP .4
+#define FMAN_PROB_STOP .3
 #define FMAN_PROB_INT .0001
 #define FMAN_PROB_CONT .2
 #define FMAN_PROB_USER .1
 
 // WES
 #define WES_LOGS_PATH LOGS_PATH
-#define WES_LOGS "wes.log"
+#define WES_LOGS "status.log"
 
 // PFC1: socket
 #define PFC_SOCK_LOG "PFC1.log"
