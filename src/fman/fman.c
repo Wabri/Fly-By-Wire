@@ -24,25 +24,25 @@ void fman(int *pidPFCs) {
         int selectedPFC = randRange(3);
         if (kill(pidPFCs[selectedPFC],0) == 0) {
             if (randPercent() <= FMAN_PROB_STOP) {
-                fprintf(pLog, "STOP PFC%d with pid %d\n", selectedPFC + 1, pidPFCs[selectedPFC]);
+                fprintf(pLog, "STOP PFC%d with pid %d\n", (selectedPFC + 1), pidPFCs[selectedPFC]);
                 kill(pidPFCs[selectedPFC], SIGSTOP);
             }
             if (randPercent() <= FMAN_PROB_INT) {
-                fprintf(pLog, "INT PFC%d with pid %d\n", selectedPFC + 1, pidPFCs[selectedPFC]);
+                fprintf(pLog, "INT PFC%d with pid %d\n", (selectedPFC + 1), pidPFCs[selectedPFC]);
                 kill(pidPFCs[selectedPFC], SIGINT);
             }
             if (randPercent() <= FMAN_PROB_CONT) {
-                fprintf(pLog, "CONT PFC%d with pid %d\n", selectedPFC + 1, pidPFCs[selectedPFC]);
+                fprintf(pLog, "CONT PFC%d with pid %d\n", (selectedPFC + 1), pidPFCs[selectedPFC]);
                 kill(pidPFCs[selectedPFC], SIGCONT);
             }
             if (randPercent() <= FMAN_PROB_USER) {
-                fprintf(pLog, "USER PFC%d with pid %d\n", selectedPFC, pidPFCs[selectedPFC]);
+                fprintf(pLog, "USER PFC%d with pid %d\n", (selectedPFC + 1), pidPFCs[selectedPFC]);
                 kill(pidPFCs[selectedPFC], SIGUSR1);
             }
         } else {
             fmanStop = 0;
             for (int i = 0; i < 3; i++) {
-                if (kill(pidPFCs[selectedPFC],0) == 0) {
+                if (kill(pidPFCs[i],0) == 0) {
                     fmanStop += 1;
                 }
             }

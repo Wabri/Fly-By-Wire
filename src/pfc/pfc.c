@@ -85,7 +85,6 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
     fprintf(pLog, "No more data on file\n");
     fprintf(pLog, "\tStop connection with Transducer\n");
     stopConnection(pCM);
-
     fclose(pFile);
     fclose(pLog);
 }

@@ -28,3 +28,4 @@ void strExtrInterval(char *dest, char *source, int start, int end) {
         dest[0] = '\0';
     }
 }
+

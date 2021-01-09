@@ -44,6 +44,9 @@ void transducer() {
             fflush(pLog);
             fflush(pSpeedLog);
             sleep(CLOCK);
+            if (kill(getppid(),0) != 0) {
+                exit(EXIT_FAILURE);
+            }
         }
 
         fprintf(pLog, "Close socket client connection with PFC\n");
@@ -74,6 +77,9 @@ void transducer() {
             fprintf(pSpeedLog, "%s\n", str);
             fflush(pSpeedLog);
             sleep(CLOCK);
+            if (kill(getppid(),0) != 0) {
+                exit(EXIT_FAILURE);
+            }
         }
 
         fprintf(pLog, "Close socket client connection with PFC\n");
@@ -122,6 +128,9 @@ void transducer() {
             fprintf(pSpeedLog, "%s\n", data);
             fflush(pSpeedLog);
             sleep(CLOCK);
+            if (kill(getppid(),0) != 0) {
+                exit(EXIT_FAILURE);
+            }
         }
         fprintf(pLog, "Close file client connection with PFC\n");
         fclose(pLog);

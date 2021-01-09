@@ -29,7 +29,7 @@
 #define FMAN_PROB_STOP .01
 #define FMAN_PROB_INT .0001
 #define FMAN_PROB_CONT .1
-#define FMAN_PROB_USER .5
+#define FMAN_PROB_USER .1
 
 // WES
 #define WES_LOGS_PATH LOGS_PATH
@@ -39,6 +39,10 @@
 #define PFCDS_LOGS_PATH LOGS_PATH
 #define PFCDS_LOGS "switch.log"
 #define PIPE_PFCDS_WES "tmp/DiscoSwitch"
+#define PFCDS_OK_SIGNAL "Ok"
+#define PFCDS_ERROR_SIGNAL "Error"
+#define PFCDS_EMERGENCY_SIGNAL "Emergency"
+#define PFCDS_EXIT_SIGNAL "Exit"
 
 // PFC1: socket
 #define PFC_SOCK_LOG "PFC1.log"
