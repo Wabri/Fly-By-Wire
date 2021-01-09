@@ -43,9 +43,9 @@ void pfcds(int *pids) {
         pid = atoi(sPid);
 
         if (kill(pid,0) == 0) {
-            fprintf(logFile, "Still alive %d\n", pid);
+            fprintf(logFile, "Signal: %s\n\tProcess with pid %d is Alive\n", signal, pid);
         } else {
-            fprintf(logFile, "Dead %d\n", pid);
+            fprintf(logFile, "Signal: %s\n\tProcess with pid %d is Dead\n", signal, pid);
         }
 
         int pfcDead = 0;
