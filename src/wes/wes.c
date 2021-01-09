@@ -1,12 +1,14 @@
 #include "wes.h"
-#include "../constants.h"
+#include "../config.h"
 #include "../utility/string.h"
 #include "../transducer/transducer.h"
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/wait.h>
 #include <unistd.h>
+#include <math.h>
 
 void wes(int *pidPFCs) {
 
@@ -35,31 +37,58 @@ void wes(int *pidPFCs) {
         swpfc[index].filePosition = 0;
     }
 
+    conMeta *pCM = malloc(sizeof(conMeta)); 
+
+    createPipeServer(pCM, PIPE_PFCDS_WES);
+
     while (1) {
         // sock
-        extractSpeedInfos(pidPFCs, &swpfc[0]);
+        int result1 = extractSpeedInfos(pidPFCs, &swpfc[0]);
         // pipe
-        extractSpeedInfos(pidPFCs, &swpfc[1]);
+        int result2 = extractSpeedInfos(pidPFCs, &swpfc[1]);
         // file
-        extractSpeedInfos(pidPFCs, &swpfc[2]);
+        int result3 = extractSpeedInfos(pidPFCs, &swpfc[2]);
         // processing
-        if (swpfc[0].counter == swpfc[1].counter) {
-            if (swpfc[0].counter == swpfc[2].counter) {
-                fprintf(logFile, "OK %d %d %d\n", swpfc[0].counter, swpfc[1].counter, swpfc[2].counter);
+        char *data;
+        if ((result1 == result2) && (result1 == result3) && (result1  == -1)) {
+            data = malloc(1 + strlen(PFCDS_EXIT_SIGNAL));
+            sprintf(data, "%s", PFCDS_EXIT_SIGNAL);
+            sendDataToPFCDS(pCM, data);
+            fprintf(logFile, "%s\n", data);
+            break;
+        }
+        int pidLength;
+        if ((swpfc[0].counter == swpfc[1].counter) && (swpfc[0].speed == swpfc[1].speed)) {
+            if ((swpfc[0].counter == swpfc[2].counter) && (swpfc[0].speed == swpfc[2].speed)) {
+                fprintf(logFile, "%s\n", PFCDS_OK_SIGNAL);
             } else {
-                // TODO: send pfcds PFC3 discord 
-                fprintf(logFile, "Error %d %d %d\n", swpfc[0].counter, swpfc[1].counter, swpfc[2].counter);
+                pidLength = (int)((ceil(log10(pidPFCs[2])) + 1) * sizeof(char));
+                data = malloc(1 + strlen(PFCDS_ERROR_SIGNAL) + 1 + pidLength);
+                sprintf(data, "%s %d", PFCDS_ERROR_SIGNAL, pidPFCs[2]);
+                sendDataToPFCDS(pCM, data);
+                fprintf(logFile, "%s\n", data);
             }
         } else if (swpfc[0].counter == swpfc[2].counter) {
-                // TODO: send pfcds PFC2 discord 
-                fprintf(logFile, "Error %d %d %d\n", swpfc[0].counter, swpfc[1].counter, swpfc[2].counter);
+            pidLength = (int)((ceil(log10(pidPFCs[1])) + 1) * sizeof(char));
+                data = malloc(1 + strlen(PFCDS_ERROR_SIGNAL) + 1 + pidLength);
+            sprintf(data, "%s %d", PFCDS_ERROR_SIGNAL, pidPFCs[1]);
+            sendDataToPFCDS(pCM, data);
+            fprintf(logFile, "%s\n", data);
         } else if (swpfc[1].counter == swpfc[2].counter) {
-                // TODO: send pfcds PFC1 discord 
-                fprintf(logFile, "Error %d %d %d\n", swpfc[0].counter, swpfc[1].counter, swpfc[2].counter);
+            pidLength = (int)((ceil(log10(pidPFCs[0])) + 1) * sizeof(char));
+            data = malloc(1 + strlen(PFCDS_ERROR_SIGNAL) + 1 + pidLength);
+            sprintf(data, "%s %d",PFCDS_ERROR_SIGNAL, pidPFCs[0]);
+            sendDataToPFCDS(pCM, data);
+            fprintf(logFile, "%s\n", data);
         } else {
-                // TODO: send pfcds Emergenza
-                fprintf(logFile, "EMERGENCY %d %d %d\n", swpfc[0].counter, swpfc[1].counter, swpfc[2].counter);
+            data = malloc(1 + strlen(PFCDS_EMERGENCY_SIGNAL));
+            sprintf(data, "%s",PFCDS_EMERGENCY_SIGNAL);
+            sendDataToPFCDS(pCM, data);
+            fprintf(logFile, "%s\n", data);
         }
+        fprintf(logFile, " %d:%f %d:%f %d:%f\n", swpfc[0].counter,
+                swpfc[0].speed, swpfc[1].counter, swpfc[1].speed,
+                swpfc[2].counter, swpfc[2].speed);
         fflush(logFile);
         sleep(CLOCK);
     }
@@ -67,42 +96,50 @@ void wes(int *pidPFCs) {
 }
 
 
-void extractSpeedInfos(int *pids, SpeedWesPFC *wes) {
-        char *data = malloc(sizeof(char[64]));
-        char *temp = malloc(sizeof(char[64]));
-        int tempCounter;
-        int cycleDone = 0;
-        while (1) {
-            if (cycleDone > 2) {
-                return;
-            } else {
-                cycleDone += 1;
-            }
-            fseek(wes->logFile, wes->filePosition, SEEK_SET);
-            fgets(data, 64, wes->logFile);
-            if (strlen(data) < 4) {
-                continue;
-            }
-            strExtrSeparator(temp, data, " ");
-            tempCounter = atoi(temp); 
-            if (tempCounter == wes->counter) {
-                cycleDone = 0;
-                continue;
-            }
-            break;
-        }
-        wes->counter = tempCounter;
-        strExtrInterval(
-                temp, 
-                data, 
-                strSeparatorIndex(data, ' ') + 1, 
-                strSeparatorIndex(data, '\0'));
-        wes->speed = atof(temp);
-        if (strlen(data) > 1) {
-            wes->filePosition += strlen(data); 
+int extractSpeedInfos(int *pids, SpeedWesPFC *wes) {
+    char *data = malloc(sizeof(char[64]));
+    char *temp = malloc(sizeof(char[64]));
+    int tempCounter;
+    int cycleDone = 0;
+    while (1) {
+        if (cycleDone > 2) {
+            return 0;
         } else {
-            wes->filePosition += 11;
+            cycleDone += 1;
         }
-        rewind(wes->logFile);
+        fseek(wes->logFile, wes->filePosition, SEEK_SET);
+        fgets(data, 64, wes->logFile);
+        if(!strcmp(data, STOP_SIGNAL)) {
+            return -1;
+        }
+        if (strlen(data) < 4) {
+            continue;
+        }
+        strExtrSeparator(temp, data, " ");
+        tempCounter = atoi(temp); 
+        if (tempCounter == wes->counter) {
+            cycleDone = 0;
+            continue;
+        }
+        break;
+    }
+    wes->counter = tempCounter;
+    strExtrInterval(
+            temp, 
+            data, 
+            strSeparatorIndex(data, ' ') + 1, 
+            strSeparatorIndex(data, '\0'));
+    wes->speed = atof(temp);
+    if (strlen(data) > 1) {
+        wes->filePosition += strlen(data); 
+    } else {
+        wes->filePosition += 11;
+    }
+    rewind(wes->logFile);
+    return 0;
 }
 
+void sendDataToPFCDS(conMeta *pCM, char *data) {
+    write(pCM->fdServer, data, strlen(data) + 1);
+    wait(NULL);
+}

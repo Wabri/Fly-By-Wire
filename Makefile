@@ -1,10 +1,11 @@
-CC=gcc
+CC=clang
 
 PREFIX_GLOBAL=src/
 PREFIX_PFC=$(PREFIX_GLOBAL)/pfc/
 PREFIX_TRANS=$(PREFIX_GLOBAL)/transducer/
 PREFIX_FMAN=$(PREFIX_GLOBAL)/fman/
 PREFIX_WES=$(PREFIX_GLOBAL)/wes/
+PREFIX_PFCDS=$(PREFIX_GLOBAL)/pfcds/
 PREFIX_UTIL=$(PREFIX_GLOBAL)/utility/
 BINDIR=bin/
 LOGDIR=log/
@@ -24,26 +25,30 @@ install: precompile main
 	@ echo "Package binaries on run"
 	@ $(CC) $(BINDIR)*.o -o run -lm
 
-main: precompile pfc transducer fman wes constants
+main: pfc transducer fman wes pfcds config
 	@ echo "Compile main"
 	@ $(CC) -c $(PREFIX_GLOBAL)main.c -o $(BINDIR)main.o
 
-pfc: precompile utility constants 
+pfc: utility config 
 	@ echo "Compile pfc"
 	@ $(CC) -c $(PREFIX_PFC)pfc.c -o $(BINDIR)pfc.o
 	@ $(CC) -c $(PREFIX_PFC)structure.c -o $(BINDIR)structure.o
 
-transducer: precompile utility constants
+transducer: utility config
 	@ echo "Compile transducer"
 	@ $(CC) -c $(PREFIX_TRANS)transducer.c -o $(BINDIR)transducer.o
 
-fman: precompile
+fman: config
 	@ echo "Compile failure manager"
 	@ $(CC) -c $(PREFIX_FMAN)fman.c -o $(BINDIR)fman.o
 
-wes: precompile
+wes: config
 	@ echo "Compile wes"
 	@ $(CC) -c $(PREFIX_WES)wes.c -o $(BINDIR)wes.o
+
+pfcds: precompile
+	@ echo "Compile pfc disconnect switch"
+	@ $(CC) -c $(PREFIX_PFCDS)pfcds.c -o $(BINDIR)pfcds.o
 
 utility: precompile
 	@ echo "Compile utilities"
@@ -51,9 +56,9 @@ utility: precompile
 	@ $(CC) -c $(PREFIX_UTIL)angles.c -o $(BINDIR)angles.o
 	@ $(CC) -c $(PREFIX_UTIL)connection.c -o $(BINDIR)connection.o
 
-constants: precompile
+config: precompile
 	@ echo "Compile constants"
-	@ $(CC) -c $(PREFIX_GLOBAL)constants.c -o $(BINDIR)constants.o
+	@ $(CC) -c $(PREFIX_GLOBAL)config.c -o $(BINDIR)config.o
 
 precompile:
 	@ echo "Create binaries and logs directory"

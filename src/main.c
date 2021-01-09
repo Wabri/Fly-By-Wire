@@ -1,9 +1,10 @@
 #include "main.h"
-#include "constants.h"
+#include "config.h"
 #include "pfc/pfc.h"
 #include "transducer/transducer.h"
 #include "fman/fman.h"
 #include "wes/wes.h"
+#include "pfcds/pfcds.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +23,7 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    int *pidPFCs = malloc(sizeof(int[3]));
+    int *pidPFCs = malloc(sizeof(int[7]));
 
     processCounter += 1;
     pidPFCs[0] = fork();
@@ -46,20 +47,30 @@ int main(int argc, char *argv[]) {
     }
 
     processCounter += 1;
-    if (fork() == 0) {
+    pidPFCs[3] = fork();
+    if (pidPFCs[3] == 0) {
         transducer();
         exit(EXIT_SUCCESS);
     }
 
     processCounter += 1;
-    if (fork() == 0) {
+    pidPFCs[4] = fork();
+    if (pidPFCs[4] == 0) {
         fman(pidPFCs);
         exit(EXIT_SUCCESS);
     }
 
     processCounter += 1;
-    if (fork() == 0) {
+    pidPFCs[5] = fork();
+    if (pidPFCs[5] == 0) {
         wes(pidPFCs);
+        exit(EXIT_SUCCESS);
+    }
+
+    processCounter += 1;
+    pidPFCs[6] = fork();
+    if (pidPFCs[6] == 0) {
+        pfcds(pidPFCs);
         exit(EXIT_SUCCESS);
     }
 
