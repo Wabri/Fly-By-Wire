@@ -43,11 +43,11 @@ void wes(int *pidPFCs) {
 
     while (1) {
         // sock
-        int result1 = extractSpeedInfos(pidPFCs, &swpfc[0]);
+        int result1 = extractSpeedInfos(&swpfc[0]);
         // pipe
-        int result2 = extractSpeedInfos(pidPFCs, &swpfc[1]);
+        int result2 = extractSpeedInfos(&swpfc[1]);
         // file
-        int result3 = extractSpeedInfos(pidPFCs, &swpfc[2]);
+        int result3 = extractSpeedInfos(&swpfc[2]);
         // processing
         char *data;
         if ((result1 == result2) && (result1 == result3) && (result1  == -1)) {
@@ -96,7 +96,7 @@ void wes(int *pidPFCs) {
 }
 
 
-int extractSpeedInfos(int *pids, SpeedWesPFC *wes) {
+int extractSpeedInfos(SpeedWesPFC *wes) {
     char *data = malloc(sizeof(char[64]));
     char *temp = malloc(sizeof(char[64]));
     int tempCounter;

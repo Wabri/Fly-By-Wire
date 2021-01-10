@@ -3,7 +3,7 @@
 
 void wes(int *);
 
-typedef struct name {
+typedef struct SpeedWesPFC {
     char *speedLogPath;
     FILE *logFile;
     long filePosition;
@@ -11,6 +11,6 @@ typedef struct name {
     float speed;
 } SpeedWesPFC;
 
-int extractSpeedInfos(int *, SpeedWesPFC *);
+int extractSpeedInfos(SpeedWesPFC *);
 
 void sendDataToPFCDS(conMeta *, char *);

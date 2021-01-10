@@ -5,11 +5,9 @@
 #include "fman/fman.h"
 #include "wes/wes.h"
 #include "pfcds/pfcds.h"
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/wait.h>
 #include <unistd.h>
