@@ -1,5 +1,6 @@
 CC=clang
 
+NAME_EXE=run
 PREFIX_GLOBAL=src/
 PREFIX_PFC=$(PREFIX_GLOBAL)/pfc/
 PREFIX_TRANS=$(PREFIX_GLOBAL)/transducer/
@@ -13,7 +14,7 @@ TMPDIR=tmp/
 
 run: all
 	@ echo "Run"
-	@ ./run
+	@ ./$(NAME_EXE)
 
 all: clean install 
 
@@ -23,7 +24,7 @@ clean:
 
 install: precompile main
 	@ echo "Package binaries on run"
-	@ $(CC) $(BINDIR)*.o -o run -lm
+	@ $(CC) $(BINDIR)*.o -o $(NAME_EXE) -lm
 
 main: pfc transducer fman wes pfcds config
 	@ echo "Compile main"

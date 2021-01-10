@@ -22,21 +22,20 @@ void signalUserHandler(int signum)
 
 void pfc(char *filePath, char *sentence, unsigned int connectionType) {
     PFC *pPFC = malloc(sizeof(PFC));
-    PTP *pPTP = malloc(sizeof(PTP));
     pPFC->filePath = filePath;
 
     signal(SIGUSR1, signalUserHandler);
 
     pPFC->fileLog = extractPFCLogName(connectionType);
 
-    parseNMEA(pPFC, pPTP, sentence, connectionType); 
+    parseNMEA(pPFC, sentence, connectionType); 
 }
 
-void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int connectionType) {
+void parseNMEA(PFC *pPFC, char *sElement, unsigned int connectionType) {
     char sLine[255];
     char sRecordHead[255];
     FILE *pFile, *pLog;
-    PTP *pPTP = pPointToPoint;
+    PTP *pPTP = malloc(sizeof(PTP));
     pFile = fopen(pPFC->filePath, "r");
     pLog = fopen(pPFC->fileLog, "w+");
 
@@ -52,13 +51,13 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
     while (fgets(sLine, sizeof(sLine), pFile) != NULL) {
         strExtrSeparator(sRecordHead, sLine, ",");
         fprintf(pLog, "Compare %s with  %s\n", sElement, sRecordHead);
-        if (strcmp(sRecordHead, sElement) == 0) {
+        if (!strcmp(sRecordHead, sElement)) {
             fprintf(pLog, "\tCatch: %s", sLine);
 
-            RawElement *pRawElement = (RawElement *)malloc(sizeof(RawElement));
+            RawElement *pRawElement = malloc(sizeof(RawElement));
             extractRawElements(pRawElement, sLine);
 
-            GLL *pGLL = (GLL *)malloc(sizeof(GLL));
+            GLL *pGLL = malloc(sizeof(GLL));
             extractGLL(pGLL, pRawElement);
             addPoint(pPTP, pGLL);
 
@@ -77,10 +76,10 @@ void parseNMEA(PFC *pPFC, PTP *pPointToPoint, char *sElement, unsigned int conne
             if (NULL != pPTP->next) {
                 pPTP = pPTP->next;
             }
-
+            sleep(CLOCK);
         }
-        sleep(CLOCK);
-    };
+        fflush(pLog);
+    }
 
     fprintf(pLog, "No more data on file\n");
     fprintf(pLog, "\tStop connection with Transducer\n");

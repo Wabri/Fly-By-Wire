@@ -1,5 +1,5 @@
 // General
-#define G18_PATH "resources/G18.txt"
+#define G18_PATH "data/G18.txt"
 #define LOGS_PATH "log/"
 #define CLOCK 1
 

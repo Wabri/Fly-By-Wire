@@ -3,7 +3,7 @@
 
 void pfc(char *, char *, unsigned int);
 
-void parseNMEA(PFC *, PTP *, char *, unsigned int);
+void parseNMEA(PFC *, char *, unsigned int);
 
 void generateConnectionWithTrans(conMeta *);
 
