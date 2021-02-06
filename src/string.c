@@ -12,29 +12,17 @@ int strExtrSeparator(char *dest, char *source, const char *separator)
 unsigned int strSeparatorIndex(char *source, const char separator)
 {
     for (int i = 0; i < strlen(source); i++)
-    {
         if (source[i] == separator)
-        {
             return i;
-        }
-    }
     return strlen(source);
 }
 
 void strExtrInterval(char *dest, char *source, int start, int end)
 {
     if (start <= end)
-    {
         for (int i = start, j = 0; i <= end; i++, j++)
-        {
             if (source[i] != '\0')
-            {
                 dest[j] = source[i];
-            }
-        }
-    }
-    else
-    {
-        dest[0] = '\0';
-    }
+            else
+                dest[0] = '\0';
 }
