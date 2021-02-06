@@ -1,68 +1,54 @@
-CC=clang
-
-NAME_EXE=run
-PREFIX_GLOBAL=src/
-PREFIX_PFC=$(PREFIX_GLOBAL)/pfc/
-PREFIX_TRANS=$(PREFIX_GLOBAL)/transducer/
-PREFIX_FMAN=$(PREFIX_GLOBAL)/fman/
-PREFIX_WES=$(PREFIX_GLOBAL)/wes/
-PREFIX_PFCDS=$(PREFIX_GLOBAL)/pfcds/
-PREFIX_UTIL=$(PREFIX_GLOBAL)/utility/
-BINDIR=bin/
-LOGDIR=log/
-TMPDIR=tmp/
-
 run: all
 	@ echo "Run"
-	@ ./$(NAME_EXE)
+	@ ./run
 
 all: clean install 
 
 clean:
 	@ echo "Clean temporary files and directories"
-	@ rm -rf $(BINDIR) $(LOGDIR) $(TMPDIR)
+	@ rm -rf bin/ log/ tmp/
 
 install: precompile main
 	@ echo "Package binaries on run"
-	@ $(CC) $(BINDIR)*.o -o $(NAME_EXE) -lm
+	@ clang bin/*.o -o run -lm
 
 main: pfc transducer fman wes pfcds config
 	@ echo "Compile main"
-	@ $(CC) -c $(PREFIX_GLOBAL)main.c -o $(BINDIR)main.o
+	@ clang -c src/main.c -o bin/main.o
 
 pfc: utility config 
 	@ echo "Compile pfc"
-	@ $(CC) -c $(PREFIX_PFC)pfc.c -o $(BINDIR)pfc.o
-	@ $(CC) -c $(PREFIX_PFC)structure.c -o $(BINDIR)structure.o
+	@ clang -c src/pfc.c -o bin/pfc.o
+	@ clang -c src/structure.c -o bin/structure.o
 
 transducer: utility config
 	@ echo "Compile transducer"
-	@ $(CC) -c $(PREFIX_TRANS)transducer.c -o $(BINDIR)transducer.o
+	@ clang -c src/transducer.c -o bin/transducer.o
 
 fman: config
 	@ echo "Compile failure manager"
-	@ $(CC) -c $(PREFIX_FMAN)fman.c -o $(BINDIR)fman.o
+	@ clang -c src/fman.c -o bin/fman.o
 
 wes: config
 	@ echo "Compile wes"
-	@ $(CC) -c $(PREFIX_WES)wes.c -o $(BINDIR)wes.o
+	@ clang -c src/wes.c -o bin/wes.o
 
 pfcds: precompile
 	@ echo "Compile pfc disconnect switch"
-	@ $(CC) -c $(PREFIX_PFCDS)pfcds.c -o $(BINDIR)pfcds.o
+	@ clang -c src/pfcds.c -o bin/pfcds.o
 
 utility: precompile
 	@ echo "Compile utilities"
-	@ $(CC) -c $(PREFIX_UTIL)string.c -o $(BINDIR)string.o
-	@ $(CC) -c $(PREFIX_UTIL)angles.c -o $(BINDIR)angles.o
-	@ $(CC) -c $(PREFIX_UTIL)connection.c -o $(BINDIR)connection.o
+	@ clang -c src/string.c -o bin/string.o
+	@ clang -c src/angles.c -o bin/angles.o
+	@ clang -c src/connection.c -o bin/connection.o
 
 config: precompile
 	@ echo "Compile constants"
-	@ $(CC) -c $(PREFIX_GLOBAL)config.c -o $(BINDIR)config.o
+	@ clang -c src/config.c -o bin/config.o
 
 precompile:
 	@ echo "Create binaries and logs directory"
-	@ mkdir $(BINDIR)
-	@ mkdir $(LOGDIR)
-	@ mkdir $(TMPDIR)
+	@ mkdir bin/
+	@ mkdir log/
+	@ mkdir tmp/

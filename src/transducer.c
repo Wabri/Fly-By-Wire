@@ -1,7 +1,7 @@
 #include "transducer.h"
-#include "../config.h"
-#include "../utility/connection.h"
-#include "../utility/string.h"
+#include "config.h"
+#include "connection.h"
+#include "string.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,7 +1,7 @@
 #include "wes.h"
-#include "../config.h"
-#include "../utility/string.h"
-#include "../transducer/transducer.h"
+#include "config.h"
+#include "string.h"
+#include "transducer.h"
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>

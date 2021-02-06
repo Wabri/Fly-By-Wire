@@ -8,12 +8,12 @@ typedef struct pfc
 
 typedef struct gll
 {
-    float fLatitude;         // eg: Latitude 49 deg. 16.45 min.
-    char cMeridianDirection; // eg: North
-    float fLongitude;        // eg: Longitude 123 deg. 11.12 min.
-    char cParallelDirection; // eg: West
-    unsigned int iFixTaken;  // eg: Fix taken at 22:54:44 UTC
-    char *sDataValid;        // eg: Data valid
+    float fLatitude;         // es: Latitude 49 deg. 16.45 min.
+    char cMeridianDirection; // es: North
+    float fLongitude;        // es: Longitude 123 deg. 11.12 min.
+    char cParallelDirection; // es: West
+    unsigned int iFixTaken;  // es: Fix taken at 22:54:44 UTC
+    char *sDataValid;        // es: Data valid
 } GLL;
 
 typedef struct rawElement
