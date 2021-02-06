@@ -156,7 +156,7 @@ void transducer()
         exit(EXIT_SUCCESS);
     }
 
-    wait(NULL); //???
+    wait(NULL);//???
     wait(NULL);
     wait(NULL);
 }
@@ -170,18 +170,17 @@ char *readInstantSpeed(int fd)
 
 char *extractTransLogName(char *logName)
 {
-    return extractGeneric(*logName);
+    char *temp = malloc(1 + strlen(TRANS_LOGS_PATH) + strlen(logName));
+    strcpy(temp, TRANS_LOGS_PATH);
+    strcat(temp, logName);
+    return temp;
 }
 
 char *extractTransSpeedLogName(char *logName)
-{
-    return extractGeneric(*logName);
-}
-
-char *extractGeneric(char *logName)
 {
     char *temp = malloc(1 + strlen(TRANS_LOGS_PATH) + strlen(logName));
     strcpy(temp, TRANS_LOGS_PATH);
     strcat(temp, logName);
     return temp;
 }
+
