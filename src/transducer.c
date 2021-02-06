@@ -16,7 +16,7 @@ void transducer()
     // PFC1 Socket
     if (fork() == 0)
     {
-        char *logPath = extractTransLogName(TRANS_SOCK_LOGS);
+        char *logPath = extractTransSpeedLogName(TRANS_SOCK_LOGS);
         FILE *pLog = fopen(logPath, "w+");
 
         char *speedLogPath = extractTransSpeedLogName(TRANS_SPFCS_LOGS);
@@ -65,7 +65,7 @@ void transducer()
     // PFC2 Pipe
     if (fork() == 0)
     {
-        char *logPath = extractTransLogName(TRANS_PIPE_LOGS);
+        char *logPath = extractTransSpeedLogName(TRANS_PIPE_LOGS);
         FILE *pLog = fopen(logPath, "w+");
 
         char *speedLogPath = extractTransSpeedLogName(TRANS_SPFCP_LOGS);
@@ -103,7 +103,7 @@ void transducer()
     // PFC3 FILE
     if (fork() == 0)
     {
-        char *logPath = extractTransLogName(TRANS_FILE_LOGS);
+        char *logPath = extractTransSpeedLogName(TRANS_FILE_LOGS);
         FILE *pLog = fopen(logPath, "w+");
 
         char *speedLogPath = extractTransSpeedLogName(TRANS_SPFCF_LOGS);
@@ -166,14 +166,6 @@ char *readInstantSpeed(int fd)
     char *str = malloc(16);
     int n = read(fd, str, 16);
     return str;
-}
-
-char *extractTransLogName(char *logName)
-{
-    char *temp = malloc(1 + strlen(TRANS_LOGS_PATH) + strlen(logName));
-    strcpy(temp, TRANS_LOGS_PATH);
-    strcat(temp, logName);
-    return temp;
 }
 
 char *extractTransSpeedLogName(char *logName)
