@@ -1,7 +1,7 @@
 #include "pfc.h"
-#include "../fman/fman.h"
-#include "../utility/string.h"
-#include "../config.h"
+#include "fman.h"
+#include "string.h"
+#include "config.h"
 #include <math.h>
 #include <signal.h>
 #include <stdio.h>

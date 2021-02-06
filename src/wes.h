@@ -1,4 +1,4 @@
-#include "../utility/connection.h"
+#include "connection.h"
 #include <stdio.h>
 
 void wes(int *);

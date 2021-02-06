@@ -1,10 +1,10 @@
 #include "main.h"
 #include "config.h"
-#include "pfc/pfc.h"
-#include "transducer/transducer.h"
-#include "fman/fman.h"
-#include "wes/wes.h"
-#include "pfcds/pfcds.h"
+#include "pfc.h"
+#include "transducer.h"
+#include "fman.h"
+#include "wes.h"
+#include "pfcds.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
