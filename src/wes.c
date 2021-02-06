@@ -152,5 +152,5 @@ int extractSpeedInfos(SpeedWesPFC *wes)
 void sendDataToPFCDS(conMeta *pCM, char *data)
 {
     write(pCM->fdServer, data, strlen(data) + 1);
-    wait(NULL);
+    wait(NULL); //log?
 }
