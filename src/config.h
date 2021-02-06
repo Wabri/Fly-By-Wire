@@ -3,10 +3,6 @@
 #define LOGS_PATH "log/"
 #define CLOCK 1
 
-// Math
-#define EARTH_RADIUS_KM 6371
-#define DELTA_SEC 1
-
 // PFC
 #define PFC_LOGS_PATH LOGS_PATH
 #define PFC_DEFAULT_SENTENCE "$GPGLL"
@@ -37,9 +33,7 @@
 // PFCDS
 #define PFCDS_LOGS_PATH LOGS_PATH
 #define PFCDS_LOGS "switch.log"
-#define PIPE_PFCDS_WES "tmp/DiscoSwitch"
 #define PFCDS_OK_SIGNAL "Ok"
-#define PFCDS_ERROR_SIGNAL "Error"
 #define PFCDS_EMERGENCY_SIGNAL "Emergency"
 #define PFCDS_EXIT_SIGNAL "Exit"
 

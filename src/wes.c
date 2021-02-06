@@ -39,7 +39,7 @@ void wes(int *pidPFCs)
 
     conMeta *pCM = malloc(sizeof(conMeta));
 
-    createPipeServer(pCM, PIPE_PFCDS_WES);
+    createPipeServer(pCM, "tmp/DiscoSwitch");
 
     while (1) ////case
     {
@@ -69,8 +69,8 @@ void wes(int *pidPFCs)
             else
             {
                 pidLength = (int)((ceil(log10(pidPFCs[2])) + 1) * sizeof(char));
-                data = malloc(1 + strlen(PFCDS_ERROR_SIGNAL) + 1 + pidLength);
-                sprintf(data, "%s %d", PFCDS_ERROR_SIGNAL, pidPFCs[2]);
+                data = malloc(7 + pidLength);
+                sprintf(data, "Error %d", pidPFCs[2]);
                 sendDataToPFCDS(pCM, data);
                 fprintf(logFile, "%s\n", data);
             }
@@ -78,16 +78,16 @@ void wes(int *pidPFCs)
         else if (swpfc[0].counter == swpfc[2].counter)
         {
             pidLength = (int)((ceil(log10(pidPFCs[1])) + 1) * sizeof(char));
-            data = malloc(1 + strlen(PFCDS_ERROR_SIGNAL) + 1 + pidLength);
-            sprintf(data, "%s %d", PFCDS_ERROR_SIGNAL, pidPFCs[1]);
+            data = malloc(7 + pidLength);
+                sprintf(data, "Error %d", pidPFCs[1]);
             sendDataToPFCDS(pCM, data);
             fprintf(logFile, "%s\n", data);
         }
         else if (swpfc[1].counter == swpfc[2].counter)
         {
             pidLength = (int)((ceil(log10(pidPFCs[0])) + 1) * sizeof(char));
-            data = malloc(1 + strlen(PFCDS_ERROR_SIGNAL) + 1 + pidLength);
-            sprintf(data, "%s %d", PFCDS_ERROR_SIGNAL, pidPFCs[0]);
+            data = malloc(7 + pidLength);
+                sprintf(data, "Error %d", pidPFCs[0]);
             sendDataToPFCDS(pCM, data);
             fprintf(logFile, "%s\n", data);
         }

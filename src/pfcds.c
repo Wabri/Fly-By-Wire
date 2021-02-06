@@ -17,7 +17,7 @@ void pfcds(int *pids)
     free(logPathName);
 
     conMeta *pCM = malloc(sizeof(conMeta));
-    createPipeClient(pCM, PIPE_PFCDS_WES);
+    createPipeClient(pCM, "tmp/DiscoSwitch");
 
     while (1)
     {

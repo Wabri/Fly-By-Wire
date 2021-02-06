@@ -78,7 +78,7 @@ void addPoint(PTP *pPTP, GLL *pGLL)
         pPTP->next->traveledDistance =
             computeDistance(pPTP->point, pPTP->next->point);
         pPTP->next->instantSpeed =
-            pPTP->instantSpeed + pPTP->next->traveledDistance / DELTA_SEC;
+            pPTP->instantSpeed + pPTP->next->traveledDistance;
     }
 }
 
@@ -91,5 +91,5 @@ float computeDistance(GLL *start, GLL *end)
     float fHa = pow(sin(fDLatitude / 2), 2) +
                 pow(sin(fDLongitude / 2), 2) * cos(fSLatitude) * cos(fELatitude);
     float fHc = 2 * atan2(sqrt(fHa), sqrt(1 - fHa));
-    return EARTH_RADIUS_KM * fHc;
+    return 6371 * fHc;
 }
