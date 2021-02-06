@@ -183,4 +183,3 @@ char *extractTransSpeedLogName(char *logName)
     strcat(temp, logName);
     return temp;
 }
-

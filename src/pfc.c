@@ -79,10 +79,8 @@ void parseNMEA(PFC *pPFC, char *sElement, unsigned int connectionType)
             fprintf(pLog, "\tSend to Transducer %s\n", data);
             sendDataToTrans(pCM, data);
 
-            if (NULL != pPTP->next)
-            {
+            if (pPTP->next != NULL)
                 pPTP = pPTP->next;
-            }
             sleep(CLOCK);
         }
         fflush(pLog);
@@ -97,7 +95,7 @@ void parseNMEA(PFC *pPFC, char *sElement, unsigned int connectionType)
 
 void generateConnectionWithTrans(conMeta *pCM)
 {
-    switch (pCM->connectionType)
+    switch (pCM->connectionType) //!!!!!
     {
     case PFC_TRANS_SOCKET:
         createSocketServer(pCM, SOCK_TRANS_NAME);
