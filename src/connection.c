@@ -49,7 +49,7 @@ void createSocketServer(conMeta *pCM, char *sockName)
 void createPipeClient(conMeta *pCM, char *pipeName)
 {
     unlink(pipeName);
-    mknod(pipeName, "S_IFIFO", 0);
+    mknod(pipeName, __S_IFIFO, 0);
     chmod(pipeName, 0660);
     pCM->fdClient = open(pipeName, O_RDONLY);
 }
