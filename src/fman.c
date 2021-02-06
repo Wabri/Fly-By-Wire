@@ -59,7 +59,7 @@ void fman(int *pidPFCs)
             }
         }
         fflush(pLog);
-        sleep(CLOCK);
+        sleep(1);
     }
     fprintf(pLog, "No more PFC alive\n\tStop running FMAN\n");
     fclose(pLog);

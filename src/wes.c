@@ -102,7 +102,7 @@ void wes(int *pidPFCs)
                 swpfc[0].speed, swpfc[1].counter, swpfc[1].speed,
                 swpfc[2].counter, swpfc[2].speed);
         fflush(logFile);
-        sleep(CLOCK);
+        sleep(1);
     }
     fclose(logFile);
 }

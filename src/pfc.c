@@ -81,7 +81,7 @@ void parseNMEA(PFC *pPFC, char *sElement, unsigned int connectionType)
 
             if (pPTP->next != NULL)
                 pPTP = pPTP->next;
-            sleep(CLOCK);
+            sleep(1);
         }
         fflush(pLog);
     }
@@ -112,7 +112,7 @@ void generateConnectionWithTrans(conMeta *pCM)
             {
                 break;
             }
-            sleep(CLOCK);
+            sleep(1);
         } while (1);
         sendDataToTrans(pCM, "-1 -1");
         break;

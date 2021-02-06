@@ -1,7 +1,6 @@
 // General
 #define G18_PATH "data/G18.txt"
 #define LOGS_PATH "log/"
-#define CLOCK 1
 
 // PFC
 #define PFC_LOGS_PATH LOGS_PATH

@@ -33,7 +33,7 @@ void transducer()
             result = connect(pCM1->fdClient, pCM1->pSerAdd, pCM1->serLen);
             if (result == -1)
             {
-                sleep(CLOCK);
+                sleep(1);
             }
         } while (result == -1);
 
@@ -49,7 +49,7 @@ void transducer()
             fprintf(pSpeedLog, "%s\n", str);
             fflush(pLog);
             fflush(pSpeedLog);
-            sleep(CLOCK);
+            sleep(1);
             if (kill(getppid(), 0) != 0)
             {
                 exit(EXIT_FAILURE);
@@ -86,7 +86,7 @@ void transducer()
             }
             fprintf(pSpeedLog, "%s\n", str);
             fflush(pSpeedLog);
-            sleep(CLOCK);
+            sleep(1);
             if (kill(getppid(), 0) != 0)
             {
                 exit(EXIT_FAILURE);
@@ -117,7 +117,7 @@ void transducer()
             {
                 break;
             }
-            sleep(CLOCK);
+            sleep(1);
         } while (1);
 
         int counter = -1;
@@ -138,13 +138,13 @@ void transducer()
             if (tempCounter == counter)
             {
                 continue;
-                sleep(CLOCK);
+                sleep(1);
             }
             counter = tempCounter;
             fprintf(pLog, "Received %s from PFC\n", data);
             fprintf(pSpeedLog, "%s\n", data);
             fflush(pSpeedLog);
-            sleep(CLOCK);
+            sleep(1);
             if (kill(getppid(), 0) != 0)
             {
                 exit(EXIT_FAILURE);

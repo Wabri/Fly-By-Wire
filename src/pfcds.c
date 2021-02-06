@@ -75,7 +75,7 @@ void pfcds(int *pids)
             return;
         }
 
-        sleep(CLOCK);
+        sleep(1);
         fflush(logFile);
     }
 }
