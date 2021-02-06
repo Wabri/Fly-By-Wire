@@ -75,10 +75,10 @@ Il FMAN processo che agisce sui processi relativi al PFC:
 
 - Ad ogni istante di tempo seleziona in modo casuale uno dei PFC
 - Viene inviato al processo scelto:
-    - con probabilità .01 invia un segnale SIGSTOP 
-    - con probabilità .0001 invia un segnale SIGINT 
-    - con probabilità .1 invia un segnale SIGCONT
-    - con probabilità .1 invia un segnale SIGUSER1 che altera il valore del successivo calcolo della velocità, effettuando un left shift di 2 bits della velocità calcolata (dopo arrotondamento e cast a intero).
+    - con probabilità 0.01 invia un segnale SIGSTOP 
+    - con probabilità 0.0001 invia un segnale SIGINT 
+    - con probabilità 0.1 invia un segnale SIGCONT
+    - con probabilità 0.1 invia un segnale SIGUSER1 che altera il valore del successivo calcolo della velocità, effettuando un left shift di 2 bits della velocità calcolata (dopo arrotondamento e cast a intero).
 - Logga l'azione su un file failures.log
 
 Si possono verificare anche più di uno degli eventi definiti sopra durante lo stesso istante di tempo. Considerando che i PFC devono saper ricevere i segnali sopra descritti.
@@ -128,4 +128,3 @@ Sono considerati opzionali i seguenti punti:
 ## Domande
 
 - per l'inizializzazione delle probabilità si può usare anche un file di configurazione a parte?
-

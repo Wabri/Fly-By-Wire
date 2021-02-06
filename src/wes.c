@@ -20,20 +20,16 @@ void wes(int *pidPFCs)
     free(logPathName);
 
     SpeedWesPFC *swpfc = malloc(sizeof(SpeedWesPFC[3]));
-
-    swpfc[0].speedLogPath = extractTransSpeedLogName(TRANS_SPFCS_LOGS);
-    swpfc[1].speedLogPath = extractTransSpeedLogName(TRANS_SPFCP_LOGS);
-    swpfc[2].speedLogPath = extractTransSpeedLogName(TRANS_SPFCF_LOGS);
+    for (int i = 0; i < 3; i++)
+    {
+        swpfc[i].speedLogPath = extractTransSpeedLogName(TRANS_SPFCS_LOGS);
+    }
     for (int index = 0; index < 3; index++)
     {
         do
         {
             swpfc[index].logFile = fopen(swpfc[index].speedLogPath, "r");
-            if (swpfc[index].logFile != NULL)
-            {
-                break;
-            }
-        } while (1);
+        } while (swpfc[index].logFile == NULL);
 
         fprintf(logFile, "speedPFC%d open correctly\n", index);
         swpfc[index].counter = -1;
@@ -45,7 +41,7 @@ void wes(int *pidPFCs)
 
     createPipeServer(pCM, PIPE_PFCDS_WES);
 
-    while (1)
+    while (1) ////case
     {
         // sock
         int result1 = extractSpeedInfos(&swpfc[0]);
@@ -120,23 +116,15 @@ int extractSpeedInfos(SpeedWesPFC *wes)
     while (1)
     {
         if (cycleDone > 2)
-        {
             return 0;
-        }
         else
-        {
             cycleDone += 1;
-        }
         fseek(wes->logFile, wes->filePosition, SEEK_SET);
         fgets(data, 64, wes->logFile);
         if (!strcmp(data, STOP_SIGNAL))
-        {
             return -1;
-        }
         if (strlen(data) < 4)
-        {
             continue;
-        }
         strExtrSeparator(temp, data, " ");
         tempCounter = atoi(temp);
         if (tempCounter == wes->counter)
@@ -154,13 +142,9 @@ int extractSpeedInfos(SpeedWesPFC *wes)
         strSeparatorIndex(data, '\0'));
     wes->speed = atof(temp);
     if (strlen(data) > 1)
-    {
         wes->filePosition += strlen(data);
-    }
     else
-    {
         wes->filePosition += 11;
-    }
     rewind(wes->logFile);
     return 0;
 }

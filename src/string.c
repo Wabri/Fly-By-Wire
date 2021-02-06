@@ -11,7 +11,7 @@ int strExtrSeparator(char *dest, char *source, const char *separator)
 
 unsigned int strSeparatorIndex(char *source, const char separator)
 {
-    for (int i = 0; i < strlen(source); i += 1)
+    for (int i = 0; i < strlen(source); i++)
     {
         if (source[i] == separator)
         {
