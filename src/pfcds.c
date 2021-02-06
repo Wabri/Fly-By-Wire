@@ -1,7 +1,7 @@
 #include "pfcds.h"
-#include "../utility/connection.h"
-#include "../utility/string.h"
-#include "../config.h"
+#include "connection.h"
+#include "string.h"
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

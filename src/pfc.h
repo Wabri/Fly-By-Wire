@@ -1,4 +1,4 @@
-#include "../utility/connection.h"
+#include "connection.h"
 #include "structure.h"
 
 void pfc(char *, char *, unsigned int);

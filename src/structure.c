@@ -1,7 +1,7 @@
 #include "structure.h"
-#include "../config.h"
-#include "../utility/angles.h"
-#include "../utility/string.h"
+#include "config.h"
+#include "angles.h"
+#include "string.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
