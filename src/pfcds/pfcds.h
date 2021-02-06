@@ -1,4 +1,4 @@
 
 void pfcds(int *pids);
 
-char *readWesDatas(int );
+char *readWesDatas(int);

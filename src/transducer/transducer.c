@@ -10,10 +10,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void transducer() {
+void transducer()
+{
 
     // PFC1 Socket
-    if (fork() == 0) {
+    if (fork() == 0)
+    {
         char *logPath = extractTransLogName(TRANS_SOCK_LOGS);
         FILE *pLog = fopen(logPath, "w+");
 
@@ -26,17 +28,21 @@ void transducer() {
 
         int result = -1;
 
-        do {
+        do
+        {
             result = connect(pCM1->fdClient, pCM1->pSerAdd, pCM1->serLen);
-            if (result == -1) {
+            if (result == -1)
+            {
                 sleep(CLOCK);
             }
         } while (result == -1);
 
-        while (1) {
+        while (1)
+        {
             char *str = readInstantSpeed(pCM1->fdClient);
             fprintf(pLog, "Received %s from PFC\n", str);
-            if (!strcmp(str, STOP_SIGNAL)) {
+            if (!strcmp(str, STOP_SIGNAL))
+            {
                 fprintf(pLog, "\tStop signal detected on socket\n");
                 break;
             }
@@ -44,7 +50,8 @@ void transducer() {
             fflush(pLog);
             fflush(pSpeedLog);
             sleep(CLOCK);
-            if (kill(getppid(),0) != 0) {
+            if (kill(getppid(), 0) != 0)
+            {
                 exit(EXIT_FAILURE);
             }
         }
@@ -56,7 +63,8 @@ void transducer() {
     }
 
     // PFC2 Pipe
-    if (fork() == 0) {
+    if (fork() == 0)
+    {
         char *logPath = extractTransLogName(TRANS_PIPE_LOGS);
         FILE *pLog = fopen(logPath, "w+");
 
@@ -67,17 +75,20 @@ void transducer() {
         fprintf(pLog, "Open pipe client connection with PFC2\n");
         createPipeClient(pCM2, PIPE_TRANS_NAME);
 
-        while (1) {
+        while (1)
+        {
             char *str = readInstantSpeed(pCM2->fdClient);
             fprintf(pLog, "Received %s from PFC\n", str);
-            if (!strcmp(str, STOP_SIGNAL)) {
+            if (!strcmp(str, STOP_SIGNAL))
+            {
                 fprintf(pLog, "\tStop signal detected on pipe\n");
                 break;
             }
             fprintf(pSpeedLog, "%s\n", str);
             fflush(pSpeedLog);
             sleep(CLOCK);
-            if (kill(getppid(),0) != 0) {
+            if (kill(getppid(), 0) != 0)
+            {
                 exit(EXIT_FAILURE);
             }
         }
@@ -90,7 +101,8 @@ void transducer() {
     }
 
     // PFC3 FILE
-    if (fork() == 0) {
+    if (fork() == 0)
+    {
         char *logPath = extractTransLogName(TRANS_FILE_LOGS);
         FILE *pLog = fopen(logPath, "w+");
 
@@ -98,9 +110,11 @@ void transducer() {
         FILE *pSpeedLog = fopen(speedLogPath, "w+");
 
         conMeta *pCM3 = malloc(sizeof(conMeta));
-        do{
+        do
+        {
             pCM3->pFile = fopen(FILE_TRANS_NAME, "r");
-            if (pCM3->pFile != NULL) {
+            if (pCM3->pFile != NULL)
+            {
                 break;
             }
             sleep(CLOCK);
@@ -108,18 +122,21 @@ void transducer() {
 
         int counter = -1;
 
-        while (1) {
+        while (1)
+        {
             rewind(pCM3->pFile);
             char data[64];
             fgets(data, 64, pCM3->pFile);
-            if (!strcmp(data, STOP_SIGNAL)) {
+            if (!strcmp(data, STOP_SIGNAL))
+            {
                 fprintf(pLog, "\tStop signal detected on file\n");
                 break;
             }
             char temp[64];
             strExtrSeparator(temp, data, " ");
-            int tempCounter = atoi(temp); 
-            if (tempCounter == counter) {
+            int tempCounter = atoi(temp);
+            if (tempCounter == counter)
+            {
                 continue;
                 sleep(CLOCK);
             }
@@ -128,7 +145,8 @@ void transducer() {
             fprintf(pSpeedLog, "%s\n", data);
             fflush(pSpeedLog);
             sleep(CLOCK);
-            if (kill(getppid(),0) != 0) {
+            if (kill(getppid(), 0) != 0)
+            {
                 exit(EXIT_FAILURE);
             }
         }
@@ -143,20 +161,23 @@ void transducer() {
     wait(NULL);
 }
 
-char *readInstantSpeed(int fd) {
+char *readInstantSpeed(int fd)
+{
     char *str = malloc(16);
     int n = read(fd, str, 16);
     return str;
 }
 
-char *extractTransLogName(char *logName) {
+char *extractTransLogName(char *logName)
+{
     char *temp = malloc(1 + strlen(TRANS_LOGS_PATH) + strlen(logName));
     strcpy(temp, TRANS_LOGS_PATH);
     strcat(temp, logName);
     return temp;
 }
 
-char *extractTransSpeedLogName(char *logName) {
+char *extractTransSpeedLogName(char *logName)
+{
     char *temp = malloc(1 + strlen(TRANS_LOGS_PATH) + strlen(logName));
     strcpy(temp, TRANS_LOGS_PATH);
     strcat(temp, logName);

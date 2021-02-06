@@ -12,4 +12,3 @@ void sendDataToTrans(conMeta *, char *);
 void stopConnection(conMeta *);
 
 char *extractPFCLogName(unsigned int);
-

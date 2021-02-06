@@ -3,7 +3,8 @@
 
 void wes(int *);
 
-typedef struct SpeedWesPFC {
+typedef struct SpeedWesPFC
+{
     char *speedLogPath;
     FILE *logFile;
     long filePosition;

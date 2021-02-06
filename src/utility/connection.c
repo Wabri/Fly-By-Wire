@@ -9,7 +9,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-void createSocketClient(conMeta *pCM, char *sockName) {
+void createSocketClient(conMeta *pCM, char *sockName)
+{
     struct sockaddr_un serAdd;
     pCM->serAdd = serAdd;
     pCM->pSerAdd = (struct sockaddr *)&pCM->serAdd;
@@ -19,16 +20,17 @@ void createSocketClient(conMeta *pCM, char *sockName) {
     strcpy(pCM->serAdd.sun_path, sockName);
 }
 
-void createSocketServer(conMeta* pCM, char *sockName) {
+void createSocketServer(conMeta *pCM, char *sockName)
+{
     struct sockaddr_un serAdd;
 
     pCM->serAdd = serAdd;
-    pCM->pSerAdd = (struct sockaddr *) &pCM->serAdd;
+    pCM->pSerAdd = (struct sockaddr *)&pCM->serAdd;
     pCM->serLen = sizeof(pCM->serAdd);
 
     struct sockaddr_un cliAdd;
     pCM->cliAdd = cliAdd;
-    pCM->pCliAdd = (struct sockaddr *) &pCM->cliAdd;
+    pCM->pCliAdd = (struct sockaddr *)&pCM->cliAdd;
     pCM->cliLen = sizeof(pCM->cliAdd);
 
     signal(SIGCHLD, SIG_IGN);
@@ -44,19 +46,22 @@ void createSocketServer(conMeta* pCM, char *sockName) {
     listen(pCM->fdServer, 1);
 }
 
-void createPipeClient(conMeta *pCM, char *pipeName) {
+void createPipeClient(conMeta *pCM, char *pipeName)
+{
     unlink(pipeName);
     mknod(pipeName, S_IFIFO, 0);
     chmod(pipeName, 0660);
-    pCM->fdClient = open(pipeName,O_RDONLY);
+    pCM->fdClient = open(pipeName, O_RDONLY);
 }
 
-void createPipeServer(conMeta *pCM, char *pipeName) {
-    do {
+void createPipeServer(conMeta *pCM, char *pipeName)
+{
+    do
+    {
         pCM->fdServer = open(pipeName, O_WRONLY);
-        if (pCM->fdServer == -1) {
+        if (pCM->fdServer == -1)
+        {
             sleep(1);
         }
     } while (pCM->fdServer == -1);
 }
-
